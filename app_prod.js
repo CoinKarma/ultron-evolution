@@ -363,7 +363,7 @@
     },
   };
 
-  let currentLang = localStorage.getItem(LANG_KEY) || "en";
+  let currentLang = localStorage.getItem(LANG_KEY) || "zh-TW";
 
   const t = (key) => {
     const dict = translations[currentLang] || translations.en;
