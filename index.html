@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CoinKarma Ultron — Filter Showcase</title>
+  <meta name="description" content="Master the Crypto Market with Data-Driven Trading Insights." />
+  <link rel="icon" href="./favicon.ico" sizes="16x16" type="image/x-icon" />
+  <meta property="og:title" content="CoinKarma Ultron — Post-Crisis Protection" />
+  <meta property="og:description" content="How we turned a -5.65σ event into stronger protection. Backtests show nearly halved maximum drawdown." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://coinkarma.co/images/favicon-dark.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="CoinKarma Ultron — Post-Crisis Protection" />
+  <meta name="twitter:description" content="How we turned a -5.65σ event into stronger protection. Backtests show nearly halved maximum drawdown." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: hsl(210 4% 9.8%);
+      --bg-card: hsl(210 2.7% 14.5%);
+      --bg-input: hsl(240 3.7% 18%);
+      --fg: hsl(0 0% 98%);
+      --muted: hsl(240 5% 64.9%);
+      --border: hsl(240 3.7% 20%);
+      --accent: #39d3ae;
+      --red: #ee6058;
+      --green: #39d3ae;
+      --yellow: #f0b429;
+      --radius: 8px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      background: hsla(210, 4%, 9.8%, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--fg);
+      text-decoration: none;
+    }
+    .site-header .logo svg { flex-shrink: 0; }
+
+    .lang-switcher {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+    }
+    .lang-btn {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .lang-btn:hover { color: var(--fg); border-color: var(--muted); }
+    .lang-btn.active {
+      background: var(--accent);
+      color: hsl(210 4% 9.8%);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 56px 32px;
+      background: linear-gradient(160deg, hsl(210 4% 12%), hsl(210 4% 16%));
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(57,211,174,0.12);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-stat-value.negative { color: var(--red); }
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Sections ── */
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .section-body {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .section-body strong { color: var(--fg); }
+
+    .subsection {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .subsection-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    /* ── MA Tiers ── */
+    .ma-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 16px;
+      max-width: 480px;
+    }
+    .ma-tier {
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .ma-tier-normal {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+    .ma-tier-120 {
+      width: 50%;
+      background: rgba(57,211,174,0.15);
+      color: var(--accent);
+    }
+    .ma-tier-180 {
+      width: 40%;
+      background: rgba(240,180,41,0.15);
+      color: var(--yellow);
+    }
+
+    /* ── FSM Diagram ── */
+    .fsm-diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .fsm-state {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      min-width: 130px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+    .fsm-normal {
+      background: rgba(57,211,174,0.1);
+      border: 1px solid rgba(57,211,174,0.25);
+      color: var(--accent);
+    }
+    .fsm-cooldown {
+      background: rgba(238,96,88,0.1);
+      border: 1px solid rgba(238,96,88,0.25);
+      color: var(--red);
+    }
+    .fsm-monitor {
+      background: rgba(240,180,41,0.1);
+      border: 1px solid rgba(240,180,41,0.25);
+      color: var(--yellow);
+    }
+    .fsm-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 6px;
+      color: var(--muted);
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .fsm-arrow::before {
+      content: "\2192";
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    /* ── Re-entry list ── */
+    .reentry-list {
+      margin-top: 16px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .reentry-list li {
+      position: relative;
+      padding: 10px 0 10px 28px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      border-bottom: 1px solid var(--border);
+    }
+    .reentry-list li:last-child { border-bottom: none; }
+    .reentry-list li::before {
+      content: attr(data-num);
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(57,211,174,0.12);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reentry-list li strong { color: var(--fg); }
+
+    /* ── Comparison Table ── */
+    .table-wrap { overflow-x: auto; margin-top: 16px; }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .comparison-table th,
+    .comparison-table td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .comparison-table th:first-child,
+    .comparison-table td:first-child {
+      text-align: left;
+    }
+    .comparison-table th {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      background: hsl(210 3% 12%);
+    }
+    .comparison-table .col-highlight {
+      background: rgba(57,211,174,0.04);
+    }
+    .comparison-table .col-highlight-head {
+      background: rgba(57,211,174,0.08);
+      color: var(--accent);
+    }
+    .val-pos { color: var(--green); font-weight: 600; }
+    .val-neg { color: var(--red); font-weight: 600; }
+
+    /* ── Chart ── */
+    .chart-section { margin-bottom: 24px; }
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .chart-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .chart-header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .legend {
+      display: flex;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .scale-toggle {
+      display: flex;
+      gap: 4px;
+    }
+    .scale-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+      padding: 4px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+      transition: all 0.15s;
+    }
+    .scale-btn:hover { background: rgba(255,255,255,0.08); }
+    .scale-btn.active {
+      background: rgba(57,211,174,0.15);
+      color: var(--accent);
+      border-color: rgba(57,211,174,0.3);
+    }
+
+    /* ── Event Deep-Dive ── */
+    .event-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 20px 0 16px;
+    }
+    .event-tab {
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .event-tab:hover { color: var(--fg); border-color: var(--muted); }
+    .event-tab.active {
+      background: rgba(57,211,174,0.12);
+      color: var(--accent);
+      border-color: rgba(57,211,174,0.3);
+      font-weight: 600;
+    }
+    .event-panel { display: none; }
+    .event-panel.active { display: block; }
+    .event-panel-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .event-panel-desc strong { color: var(--fg); }
+    .event-reason-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+    .event-reason-tag.reason-overlay_c {
+      background: rgba(57,211,174,0.12);
+      color: var(--accent);
+    }
+    .event-reason-tag.reason-ma-filter {
+      background: rgba(255,193,7,0.12);
+      color: var(--yellow);
+    }
+    .event-reason-tag.reason-signal,
+    .event-reason-tag.reason-sign_flip {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+    .event-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .event-scenario {
+      background: hsl(210 3% 11%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .event-scenario-highlight {
+      border-color: rgba(57,211,174,0.25);
+    }
+    .event-scenario-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .trade-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .trade-table th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .trade-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--muted);
+    }
+    .trade-table tr:last-child td { border-bottom: none; }
+    .trade-table .trade-action-entry { color: var(--accent); }
+    .trade-table .trade-action-exit { color: var(--red); }
+    .trade-table .trade-action-add { color: var(--yellow); }
+    .trade-table .trade-action-reduce { color: var(--yellow); }
+    .trade-omitted-row td {
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+      font-size: 12px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+    .trade-summary {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    /* ── Event Summary Banner ── */
+    .event-summary-banner {
+      display: flex;
+      gap: 24px;
+      padding: 14px 16px;
+      background: hsl(210 3% 11%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .event-summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .event-summary-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .event-summary-value { font-weight: 600; }
+
+    /* ── Trade Toggle ── */
+    .trade-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .trade-toggle:hover { color: var(--fg); border-color: var(--muted); }
+    .trade-details { display: none; margin-top: 8px; }
+    .trade-details.expanded { display: block; }
+
+    /* ── FAQ Accordion ── */
+    .faq-list { display: flex; flex-direction: column; gap: 8px; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: hsl(210 3% 11%);
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 14px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: color 0.15s ease;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::marker { display: none; }
+    .faq-item summary::after {
+      content: "+";
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .faq-item[open] summary::after {
+      content: "\2212";
+    }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-answer {
+      padding: 0 16px 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .plot-container {
+      background: hsl(210 3% 12%);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 6px;
+    }
+    .plot-container .plotly-graph-div { width: 100% !important; }
+    .plot-container .modebar { opacity: 0; transition: opacity 0.2s ease; }
+    .plot-container:hover .modebar { opacity: 1; }
+    .plot-container .modebar-btn { color: var(--muted) !important; }
+    .plot-container .modebar-btn:hover { color: var(--fg) !important; }
+    .plot-container .rangeslider-container { opacity: 0.5; }
+
+    /* ── Evolution Timeline ── */
+    .timeline {
+      position: relative;
+      padding: 8px 0 0 28px;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 12px;
+      bottom: 12px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--border), var(--accent));
+      border-radius: 1px;
+    }
+    .tl-item {
+      position: relative;
+      padding: 0 0 28px 0;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item::before {
+      content: "";
+      position: absolute;
+      left: -25px;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 2px solid var(--bg-card);
+      z-index: 1;
+    }
+    .tl-item:last-child::before {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(57, 211, 174, 0.4);
+    }
+    .tl-date {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+    .tl-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+    .tl-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── Footer ── */
+    .story-footer {
+      margin-top: 24px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-note {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .footer-computed {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    /* ── Loading ── */
+    .loading-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeUp 0.4s ease forwards; }
+
+    /* ── RWD ── */
+    @media (max-width: 768px) {
+      .site-header { padding: 0 16px; }
+      .page { padding: 20px 16px 48px; }
+      .card { padding: 24px 18px; }
+      .hero { padding: 36px 18px; }
+      .hero-title { font-size: 24px; }
+      .hero-subtitle { font-size: 14px; }
+      .hero-stats { gap: 24px; flex-wrap: wrap; }
+      .hero-stat-value { font-size: 22px; }
+      .fsm-diagram { flex-direction: column; align-items: stretch; }
+      .fsm-state { min-width: auto; }
+      .fsm-arrow { padding: 4px 0; }
+      .fsm-arrow::before { content: "\2193"; }
+      .chart-header { flex-direction: column; align-items: flex-start; }
+      .legend { flex-wrap: wrap; gap: 8px; }
+      .event-tabs { gap: 4px; }
+      .event-tab { padding: 5px 12px; font-size: 11px; }
+      .event-compare { grid-template-columns: 1fr; }
+      .event-summary-banner { flex-wrap: wrap; gap: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-stats { flex-direction: column; gap: 16px; }
+      .comparison-table th, .comparison-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="./">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      <span data-i18n="site-title">CoinKarma Ultron</span>
+    </a>
+    <div class="lang-switcher">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="zh-TW">繁</button>
+      <button class="lang-btn" data-lang="zh-CN">简</button>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- ====== HERO ====== -->
+    <section class="hero card animate-in">
+      <div class="hero-badge" data-i18n="hero-badge">Post-Crisis Response</div>
+      <h1 class="hero-title" data-i18n="hero-title">Turning a -5.65&sigma; Event Into Stronger Protection</h1>
+      <p class="hero-subtitle" data-i18n="hero-subtitle" data-i18n-html>In January 2026, Bitcoin suffered its worst drawdown since the FTX bankruptcy &mdash; a <strong>-5.65&sigma; extreme event</strong> that has only occurred 4 times since 2010. Ultron drew down ~25%, with our team&rsquo;s own capital bearing the same losses alongside subscribers. We spent extensive time studying past crash patterns and indicator desensitization, and developed new long-side protection layers. Backtests show these would have <strong>nearly halved</strong> the maximum drawdown.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-value" id="hero-roi-delta">--</span>
+          <span class="hero-stat-label" data-i18n="hero-stat-roi-delta" id="hero-roi-delta-label">ROI Improvement</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value" id="hero-mdd-delta">--</span>
+          <span class="hero-stat-label" data-i18n="hero-stat-mdd-delta" id="hero-mdd-delta-label">MDD Improvement</span>
+        </div>
+      </div>
+      <p class="hero-stats-note" data-i18n="hero-stats-note" style="margin-top:10px;font-size:11px;opacity:0.7;text-align:center;">Improvement from adding Long Filter (vs Short Filter only)</p>
+    </section>
+
+    <!-- ====== INTRO ====== -->
+    <section class="card animate-in">
+      <p class="section-body" data-i18n="intro-body" data-i18n-html>We studied past major BTC crashes in depth and discovered that before each event, the <strong>Binance BTCUSDT perpetual contract&rsquo;s Long-Short Ratio (LSUR)</strong> and <strong>Open Interest</strong> consistently showed detectable anomalies. We had already developed the <strong>Short Filter</strong> in 2025 Q4. After this event, we further developed the <strong>Long Filter</strong>, completing the risk protection framework. Below is a backtest comparison showing the impact.</p>
+    </section>
+
+    <!-- ====== SHORT FILTER ====== -->
+    <section class="card animate-in">
+      <h2 class="section-title" data-i18n="sf-title">Short Filter</h2>
+      <p class="section-body" data-i18n="sf-body" data-i18n-html>Monitors <strong>Cumberland OTC</strong> transfer activity on-chain. When large transfers exceed sell-side liquidity thresholds, short entries are blocked to avoid false signals during strong uptrends.</p>
+    </section>
+
+    <!-- ====== LONG FILTER ====== -->
+    <section class="card animate-in">
+      <h2 class="section-title" data-i18n="lf-title">Long Filter: Multi-Layer Protection</h2>
+
+      <!-- Layer 1: MA Filter -->
+      <div>
+        <h3 class="subsection-title" data-i18n="lf-ma-title">Layer 1 &mdash; Moving Average Filter</h3>
+        <p class="section-body" data-i18n="lf-ma-body" data-i18n-html>Gradually reduces long exposure as price falls below key moving averages, preventing catastrophic losses while retaining partial upside. With 3&times; leverage, a 50% coefficient caps exposure at 1.5&times;, and 40% caps it at 1.2&times;&mdash;effectively spot-level exposure&mdash;dramatically reducing liquidation risk.</p>
+        <div class="ma-tiers">
+          <div class="ma-tier ma-tier-normal" data-i18n="lf-tier-normal">Normal: 100% exposure</div>
+          <div class="ma-tier ma-tier-120" data-i18n="lf-tier-120">Below MA120: 50%</div>
+          <div class="ma-tier ma-tier-180" data-i18n="lf-tier-180">Below MA180 + Declining: 40%</div>
+        </div>
+      </div>
+
+      <!-- Layer 2: Crash Stop-Loss -->
+      <div class="subsection">
+        <h3 class="subsection-title" data-i18n="lf-crash-title">Layer 2 &mdash; Crash Detection &amp; Cooldown</h3>
+        <p class="section-body" data-i18n="lf-crash-body" data-i18n-html>Detects crash conditions when multiple signals fire simultaneously: <strong>24h price drop &ge; 5%</strong>, combined with abnormally elevated <strong>LSUR z-score</strong> and <strong>Open Interest z-score</strong>. When triggered, all positions are <strong>immediately closed</strong>.</p>
+
+        <!-- FSM Diagram -->
+        <div class="fsm-diagram">
+          <div class="fsm-state fsm-normal" data-i18n="fsm-normal">Normal Trading</div>
+          <div class="fsm-arrow"><span data-i18n="fsm-trigger">Crash Detected</span></div>
+          <div class="fsm-state fsm-cooldown" data-i18n="fsm-cooldown" data-i18n-html>Mandatory Cooldown<br>72 hours</div>
+          <div class="fsm-arrow"><span data-i18n="fsm-cooldown-end">Expires</span></div>
+          <div class="fsm-state fsm-monitor" data-i18n="fsm-monitor" data-i18n-html>Monitoring Phase<br>&le; 120 hours</div>
+          <div class="fsm-arrow"><span data-i18n="fsm-reentry">Conditions Met</span></div>
+          <div class="fsm-state fsm-normal" data-i18n="fsm-resume">Resume Trading</div>
+        </div>
+
+        <!-- Re-entry conditions -->
+        <p class="section-body" style="margin-bottom: 8px;" data-i18n="lf-reentry-title" data-i18n-html>After the 72-hour mandatory cooldown, the system enters a <strong>monitoring phase</strong>. Trading resumes when <strong>any one</strong> of the following conditions is met:</p>
+        <ol class="reentry-list">
+          <li data-num="1" data-i18n="lf-reentry-vol" data-i18n-html><strong>Volatility Normalization</strong> &mdash; Current 24h realized volatility drops below 70% of the volatility at the time of the crash trigger.</li>
+          <li data-num="2" data-i18n="lf-reentry-spike" data-i18n-html><strong>Price Reversal Signal</strong> &mdash; Previous day's intraday range exceeds 10%, indicating a potential reversal.</li>
+          <li data-num="3" data-i18n="lf-reentry-timeout" data-i18n-html><strong>Time Expiry</strong> &mdash; 120-hour monitoring window expires without any condition being met, and the system resumes cautiously.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ====== COMPARISON TABLE ====== -->
+    <section class="card animate-in" id="section-comparison">
+      <h2 class="section-title" data-i18n="comp-title">Results Comparison</h2>
+      <p class="section-body" data-i18n="comp-subtitle" data-i18n-html>BTC backtest from <strong>August 2022</strong> to present, starting with <strong>$100,000 USD</strong>. 3x leverage, MLD (Multi-Layer Dynamic) rolling thresholds.</p>
+      <div class="table-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th data-i18n="comp-metric">Metric</th>
+              <th data-i18n="comp-no-filter">No Filters</th>
+              <th data-i18n="comp-short-only">Short Filter Only</th>
+              <th class="col-highlight-head" data-i18n="comp-full">Full Protection</th>
+            </tr>
+          </thead>
+          <tbody id="comparison-tbody">
+            <tr><td colspan="4" class="loading-overlay" data-i18n="loading">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== EQUITY CHART ====== -->
+    <section class="chart-section card animate-in">
+      <div class="chart-header">
+        <div>
+          <h2 data-i18n="equity-title">Equity Curve Comparison</h2>
+          <p data-i18n="equity-desc">Three scenarios overlaid against BTC price.</p>
+        </div>
+        <div class="scale-toggle" id="scale-toggle">
+          <button class="scale-btn active" data-scale="log">Log</button>
+          <button class="scale-btn" data-scale="linear">Linear</button>
+        </div>
+      </div>
+      <div class="plot-container"><div id="equity-plot"></div></div>
+    </section>
+
+    <!-- ====== DRAWDOWN CHART ====== -->
+    <section class="chart-section card animate-in">
+      <div class="chart-header">
+        <div>
+          <h2 data-i18n="dd-title">Drawdown Comparison</h2>
+          <p data-i18n="dd-desc">How each configuration weathered the worst periods.</p>
+        </div>
+      </div>
+      <div class="plot-container"><div id="drawdown-plot"></div></div>
+    </section>
+
+    <!-- ====== EVENT DEEP-DIVE ====== -->
+    <section class="card animate-in" id="section-events">
+      <h2 class="section-title" data-i18n="events-title">Event Deep-Dive</h2>
+      <p class="section-body" data-i18n="events-desc">How each configuration handled major market crashes. The table below compares the most impacted position during each event.</p>
+      <div class="event-tabs" id="event-tabs"></div>
+      <div class="event-panels" id="event-panels">
+        <div class="loading-overlay" data-i18n="loading">Loading...</div>
+      </div>
+    </section>
+
+    <!-- ====== EVOLUTION TIMELINE ====== -->
+    <section class="card animate-in" id="section-evolution">
+      <h2 class="section-title" data-i18n="evo-title">Always Evolving</h2>
+      <p class="section-body" data-i18n="evo-desc">Ultron is not a static strategy. Each market event teaches us something new, and we continuously refine our risk management framework.</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date" data-i18n="evo-date-1">Feb 2025</div>
+          <div class="tl-title" data-i18n="evo-title-1">MarketPulse Index Integration</div>
+          <div class="tl-desc" data-i18n="evo-desc-1">Migrated from Overall LIQ batch entry to MarketPulse Index (MPI) dynamic position sizing, enabling more precise market timing.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date" data-i18n="evo-date-2">Sep 2025</div>
+          <div class="tl-title" data-i18n="evo-title-2">Short Filter</div>
+          <div class="tl-desc" data-i18n="evo-desc-2">Developed Cumberland OTC monitoring to avoid premature short entries during sustained uptrends.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date" data-i18n="evo-date-3">Oct 2025</div>
+          <div class="tl-title" data-i18n="evo-title-3">Dynamic Thresholds (MLD)</div>
+          <div class="tl-desc" data-i18n="evo-desc-3">Introduced Multi-Layer Dynamic thresholds that adapt entry and exit levels based on current market conditions.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date" data-i18n="evo-date-4">Feb 2026</div>
+          <div class="tl-title" data-i18n="evo-title-4">Long Filter</div>
+          <div class="tl-desc" data-i18n="evo-desc-4">Market stress analysis revealed additional protection opportunities. Developed the MA Filter and Crash Detection system with mandatory cooldown periods.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date" data-i18n="evo-date-5">Q2 2026</div>
+          <div class="tl-title" data-i18n="evo-title-5">Next: Macro Regime Detection</div>
+          <div class="tl-desc" data-i18n="evo-desc-5">Researching cross-asset macro correlations and additional on-chain anomaly patterns to further expand the protection framework.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== FAQ ====== -->
+    <section class="card animate-in" id="section-faq">
+      <h2 class="section-title" data-i18n="faq-title">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary data-i18n="faq-q1">Why does the backtest differ from live performance?</summary>
+          <div class="faq-answer" data-i18n="faq-a1" data-i18n-html>Ultron has been live-trading since <strong>May 2024</strong>, from day one of CoinKarma&rsquo;s launch. The strategy has gone through multiple iterations since then. This page shows backtests using the <strong>latest MLD + Filter version</strong>, which incorporates all historical improvements. Since the strategy is continuously evolving, earlier live results naturally differ from the current backtest.</div>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q2">Why wasn&rsquo;t the Long Filter in place before?</summary>
+          <div class="faq-answer" data-i18n="faq-a2" data-i18n-html>The <strong>Short Filter</strong> was already deployed in 2025 Q4. Developing the Long Filter required sufficient crash samples for modeling. The -5.65&sigma; event in January 2026 provided the critical data patterns that enabled us to build and validate this protection layer.</div>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q3">Does the Filter reduce returns in bull markets?</summary>
+          <div class="faq-answer" data-i18n="faq-a3" data-i18n-html>Quite the opposite. Backtests show that adding Filters <strong>significantly increased ROI</strong>. The reason: avoiding deep drawdowns means the portfolio doesn&rsquo;t have to climb out of a deep hole, and compounding effects accelerate equity growth.</div>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q4">Is the backtest period cherry-picked?</summary>
+          <div class="faq-answer" data-i18n="faq-a4" data-i18n-html>No. The backtest covers <strong>August 2022 to present</strong>, spanning a full bull-bear cycle and 5 major crisis events: FTX bankruptcy, BOJ rate hike, tariff escalation, November 2025 sell-off, and the January 2026 crash.</div>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q5">Does the team trade with their own capital?</summary>
+          <div class="faq-answer" data-i18n="faq-a5" data-i18n-html>Yes. Since CoinKarma launched in <strong>May 2024</strong>, the team&rsquo;s own capital has been trading the exact same strategy alongside subscribers, sharing the same gains and losses.</div>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q6">Why does the backtest start from August 2022? Can&rsquo;t it go further back?</summary>
+          <div class="faq-answer" data-i18n="faq-a6" data-i18n-html>The earliest available data from our data sources begins on <strong>August 1, 2022</strong>. This period already covers multiple distinct market phases &mdash; including bear markets, recoveries, bull runs, and several major crash events &mdash; providing a comprehensive validation of the strategy&rsquo;s performance.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="story-footer">
+      <p class="footer-note" data-i18n="footer-note">Data range: 2022-08-01 to present. Past performance does not guarantee future results. All backtests use 3x leverage, MLD (Multi-Layer Dynamic) rolling thresholds, 0.05% commission, and slippage assumptions.</p>
+      <p class="footer-computed" id="footer-computed"></p>
+    </footer>
+
+  </div>
+
+  <script src="./app_prod.js"></script>
+</body>
+</html>
