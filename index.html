@@ -956,6 +956,10 @@
           <summary data-i18n="faq-q6">Why does the backtest start from August 2022? Can&rsquo;t it go further back?</summary>
           <div class="faq-answer" data-i18n="faq-a6" data-i18n-html>The earliest available data from our data sources begins on <strong>August 1, 2022</strong>. This period already covers multiple distinct market phases &mdash; including bear markets, recoveries, bull runs, and several major crash events &mdash; providing a comprehensive validation of the strategy&rsquo;s performance.</div>
         </details>
+        <details class="faq-item">
+          <summary data-i18n="faq-q7">Is there a risk of overfitting in the newly added Long Filter?</summary>
+          <div class="faq-answer" data-i18n="faq-a7">The Long Filter has two layers. Layer 1 (MA Filter) is a trend-based position management mechanism: when price falls below key moving averages, the system automatically reduces long exposure rather than trying to predict specific crash events. This logic uses few parameters and doesn&rsquo;t depend on specific patterns, making overfitting risk very low. In two of the five major backtest events, the Layer 2 crash stop-loss wasn&rsquo;t even triggered &mdash; the MA Filter&rsquo;s exposure reduction alone was sufficient to control losses. Layer 2&rsquo;s crash detection does rely on a smaller sample set, but its role is supplementary insurance, not the primary line of defense.</div>
+        </details>
       </div>
     </section>
 
