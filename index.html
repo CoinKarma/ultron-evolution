@@ -941,24 +941,24 @@
           <div class="faq-answer" data-i18n="faq-a2">The Short Filter was already deployed and running in 2025 Q4. Developing the Long Filter required sufficient crash samples for modeling. The -5.65&sigma; event in January 2026 provided the critical data patterns that enabled us to build and validate this protection layer. Additionally, after November 2025, to avoid the impact of fat-tail events in a bear market, the team proactively halved long exposure, which already reduced the original ~50% drawdown to ~25%.</div>
         </details>
         <details class="faq-item">
-          <summary data-i18n="faq-q3">Does the Filter reduce returns in bull markets?</summary>
-          <div class="faq-answer" data-i18n="faq-a3" data-i18n-html>Quite the opposite. Backtests show that adding Filters <strong>significantly increased ROI</strong>. The reason: avoiding deep drawdowns means the portfolio doesn&rsquo;t have to climb out of a deep hole, and compounding effects accelerate equity growth.</div>
+          <summary data-i18n="faq-q3">Is there a risk of overfitting in the newly added Long Filter?</summary>
+          <div class="faq-answer" data-i18n="faq-a3">The Long Filter has two layers. Layer 1 (MA Filter) is a trend-based position management mechanism: when price falls below key moving averages, the system automatically reduces long exposure rather than trying to predict specific crash events. This logic uses few parameters and doesn&rsquo;t depend on specific patterns, making overfitting risk very low. In two of the five major backtest events, the Layer 2 crash stop-loss wasn&rsquo;t even triggered &mdash; the MA Filter&rsquo;s exposure reduction alone was sufficient to control losses. Layer 2&rsquo;s crash detection does rely on a smaller sample set, but its role is supplementary insurance, not the primary line of defense.</div>
         </details>
         <details class="faq-item">
-          <summary data-i18n="faq-q4">Is the backtest period cherry-picked?</summary>
-          <div class="faq-answer" data-i18n="faq-a4" data-i18n-html>No. The backtest covers <strong>August 2022 to present</strong>, spanning a full bull-bear cycle and 5 major crisis events: FTX bankruptcy, BOJ rate hike, tariff escalation, November 2025 sell-off, and the January 2026 crash.</div>
+          <summary data-i18n="faq-q4">Does the Filter reduce returns in bull markets?</summary>
+          <div class="faq-answer" data-i18n="faq-a4" data-i18n-html>Quite the opposite. Backtests show that adding Filters <strong>significantly increased ROI</strong>. The reason: avoiding deep drawdowns means the portfolio doesn&rsquo;t have to climb out of a deep hole, and compounding effects accelerate equity growth.</div>
         </details>
         <details class="faq-item">
-          <summary data-i18n="faq-q5">Does the team trade with their own capital?</summary>
-          <div class="faq-answer" data-i18n="faq-a5" data-i18n-html>Yes. Since CoinKarma launched in <strong>May 2024</strong>, the team&rsquo;s own capital has been trading the exact same strategy alongside subscribers, sharing the same gains and losses.</div>
+          <summary data-i18n="faq-q5">Is the backtest period cherry-picked?</summary>
+          <div class="faq-answer" data-i18n="faq-a5" data-i18n-html>No. The backtest covers <strong>August 2022 to present</strong>, spanning a full bull-bear cycle and 5 major crisis events: FTX bankruptcy, BOJ rate hike, tariff escalation, November 2025 sell-off, and the January 2026 crash.</div>
         </details>
         <details class="faq-item">
-          <summary data-i18n="faq-q6">Why does the backtest start from August 2022? Can&rsquo;t it go further back?</summary>
-          <div class="faq-answer" data-i18n="faq-a6" data-i18n-html>The earliest available data from our data sources begins on <strong>August 1, 2022</strong>. This period already covers multiple distinct market phases &mdash; including bear markets, recoveries, bull runs, and several major crash events &mdash; providing a comprehensive validation of the strategy&rsquo;s performance.</div>
+          <summary data-i18n="faq-q6">Does the team trade with their own capital?</summary>
+          <div class="faq-answer" data-i18n="faq-a6" data-i18n-html>Yes. Since CoinKarma launched in <strong>May 2024</strong>, the team&rsquo;s own capital has been trading the exact same strategy alongside subscribers, sharing the same gains and losses.</div>
         </details>
         <details class="faq-item">
-          <summary data-i18n="faq-q7">Is there a risk of overfitting in the newly added Long Filter?</summary>
-          <div class="faq-answer" data-i18n="faq-a7">The Long Filter has two layers. Layer 1 (MA Filter) is a trend-based position management mechanism: when price falls below key moving averages, the system automatically reduces long exposure rather than trying to predict specific crash events. This logic uses few parameters and doesn&rsquo;t depend on specific patterns, making overfitting risk very low. In two of the five major backtest events, the Layer 2 crash stop-loss wasn&rsquo;t even triggered &mdash; the MA Filter&rsquo;s exposure reduction alone was sufficient to control losses. Layer 2&rsquo;s crash detection does rely on a smaller sample set, but its role is supplementary insurance, not the primary line of defense.</div>
+          <summary data-i18n="faq-q7">Why does the backtest start from August 2022? Can&rsquo;t it go further back?</summary>
+          <div class="faq-answer" data-i18n="faq-a7" data-i18n-html>The earliest available data from our data sources begins on <strong>August 1, 2022</strong>. This period already covers multiple distinct market phases &mdash; including bear markets, recoveries, bull runs, and several major crash events &mdash; providing a comprehensive validation of the strategy&rsquo;s performance.</div>
         </details>
       </div>
     </section>
