@@ -596,12 +596,9 @@
       margin: { l: 65, r: 40, t: 40, b: 40 },
       height: 480,
       showlegend: true,
-      legend: {
-        bgcolor: "rgba(30,30,38,0.85)",
-        bordercolor: "rgba(255,255,255,0.08)",
-        borderwidth: 1,
-        font: { color: C.textBright, size: 11 },
-      },
+      legend: window.innerWidth < 768
+        ? { orientation: "h", x: 0, y: 1.12, xanchor: "left", yanchor: "bottom", bgcolor: "transparent", font: { color: C.textBright, size: 10 } }
+        : { bgcolor: "rgba(30,30,38,0.85)", bordercolor: "rgba(255,255,255,0.08)", borderwidth: 1, font: { color: C.textBright, size: 11 } },
       hovermode: "x unified",
       hoverlabel: {
         bgcolor: "rgba(30,30,38,0.95)",
@@ -675,12 +672,9 @@
       margin: { l: 55, r: 40, t: 24, b: 40 },
       height: 340,
       showlegend: true,
-      legend: {
-        bgcolor: "rgba(30,30,38,0.85)",
-        bordercolor: "rgba(255,255,255,0.08)",
-        borderwidth: 1,
-        font: { color: C.textBright, size: 11 },
-      },
+      legend: window.innerWidth < 768
+        ? { orientation: "h", x: 0, y: 1.08, xanchor: "left", yanchor: "bottom", bgcolor: "transparent", font: { color: C.textBright, size: 10 } }
+        : { bgcolor: "rgba(30,30,38,0.85)", bordercolor: "rgba(255,255,255,0.08)", borderwidth: 1, font: { color: C.textBright, size: 11 } },
       hovermode: "x unified",
       hoverlabel: {
         bgcolor: "rgba(30,30,38,0.95)",
