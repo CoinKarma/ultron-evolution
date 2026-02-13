@@ -946,11 +946,10 @@
       document.querySelectorAll(".scale-btn").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       const isLog = btn.dataset.scale === "log";
-      Plotly.relayout("equity-plot", {
-        "yaxis.type": btn.dataset.scale,
-        "yaxis.dtick": isLog ? "D2" : null,
-        "yaxis.tickformat": isLog ? "$~s" : "$,.0f",
-      });
+      Plotly.relayout("equity-plot", isLog
+        ? { "yaxis.type": "log", "yaxis.tickmode": "linear", "yaxis.dtick": "D2", "yaxis.tickformat": "$~s" }
+        : { "yaxis.type": "linear", "yaxis.tickmode": "auto", "yaxis.dtick": "", "yaxis.tickformat": "$,.0f" }
+      );
     });
   });
 
