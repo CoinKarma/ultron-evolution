@@ -577,13 +577,13 @@
       { date: "2025-11-15", label: "Nov '25" },
       { date: "2026-01-20", label: "Jan '26" },
     ];
-    const evtShapes = eventMarkers.map((m) => ({
+    const evtShapes = window.innerWidth < 768 ? [] : eventMarkers.map((m) => ({
       type: "line",
       x0: m.date, x1: m.date,
       y0: 0, y1: 1, yref: "paper",
       line: { color: "rgba(255,255,255,0.12)", width: 1, dash: "dot" },
     }));
-    const evtAnnotations = eventMarkers.map((m) => ({
+    const evtAnnotations = window.innerWidth < 768 ? [] : eventMarkers.map((m) => ({
       x: m.date, y: 1.02, yref: "paper",
       text: m.label, showarrow: false,
       font: { size: 10, color: "rgba(255,255,255,0.4)" },
