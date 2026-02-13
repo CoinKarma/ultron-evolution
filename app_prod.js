@@ -623,12 +623,7 @@
       annotations: evtAnnotations,
       xaxis: {
         ...darkAxis,
-        rangeslider: {
-          visible: true,
-          bgcolor: "hsl(210,3%,10%)",
-          bordercolor: "rgba(255,255,255,0.06)",
-          thickness: 0.06,
-        },
+        rangeslider: { visible: false },
         rangeselector: {
           buttons: [
             { count: 6, label: "6M", step: "month", stepmode: "backward" },
