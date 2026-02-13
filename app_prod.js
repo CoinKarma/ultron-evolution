@@ -948,7 +948,7 @@
       const isLog = btn.dataset.scale === "log";
       Plotly.relayout("equity-plot", isLog
         ? { "yaxis.type": "log", "yaxis.tickmode": "linear", "yaxis.dtick": "D2", "yaxis.tickformat": "$~s" }
-        : { "yaxis.type": "linear", "yaxis.tickmode": "auto", "yaxis.dtick": "", "yaxis.tickformat": "$,.0f" }
+        : { "yaxis.type": "linear", "yaxis.tickmode": "auto", "yaxis.dtick": "", "yaxis.tickformat": "$~s" }
       );
     });
   });
