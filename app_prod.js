@@ -906,7 +906,7 @@
 
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       try {
-        const resp = await fetch("./showcase.json");
+        const resp = await fetch("/ultron-evolution/showcase.json");
         if (resp.status === 503) {
           // Data still being computed at startup
           await new Promise((r) => setTimeout(r, RETRY_DELAY));
