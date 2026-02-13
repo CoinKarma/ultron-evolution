@@ -945,7 +945,12 @@
     btn.addEventListener("click", () => {
       document.querySelectorAll(".scale-btn").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      Plotly.relayout("equity-plot", { "yaxis.type": btn.dataset.scale });
+      const isLog = btn.dataset.scale === "log";
+      Plotly.relayout("equity-plot", {
+        "yaxis.type": btn.dataset.scale,
+        "yaxis.dtick": isLog ? "D2" : null,
+        "yaxis.tickformat": isLog ? "$~s" : "$,.0f",
+      });
     });
   });
 
