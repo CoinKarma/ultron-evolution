@@ -554,6 +554,7 @@
 
     const traces = [
       {
+        type: "scattergl",
         x: bh.x,
         y: bh.y,
         name: t("legend-bh"),
@@ -561,6 +562,7 @@
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-bh") + "</extra>",
       },
       {
+        type: "scattergl",
         x: nf.x,
         y: nf.y,
         name: t("legend-no-filter"),
@@ -568,6 +570,7 @@
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-no-filter") + "</extra>",
       },
       {
+        type: "scattergl",
         x: so.x,
         y: so.y,
         name: t("legend-short-only"),
@@ -575,6 +578,7 @@
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-short-only") + "</extra>",
       },
       {
+        type: "scattergl",
         x: fp.x,
         y: fp.y,
         name: t("legend-full"),
