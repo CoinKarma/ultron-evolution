@@ -533,36 +533,50 @@
       .join("");
   };
 
+  const downsample = (x, y, maxPts = 2000) => {
+    if (x.length <= maxPts) return { x, y };
+    const step = Math.ceil(x.length / maxPts);
+    const sx = [], sy = [];
+    for (let i = 0; i < x.length; i += step) { sx.push(x[i]); sy.push(y[i]); }
+    if (sx[sx.length - 1] !== x[x.length - 1]) { sx.push(x[x.length - 1]); sy.push(y[y.length - 1]); }
+    return { x: sx, y: sy };
+  };
+
   const renderEquityChart = (data) => {
     // Compute Buy & Hold equity from BTC prices (same $100K starting capital)
     const startPrice = data.btc_price.values[0];
     const bhEquity = data.btc_price.values.map((p) => 100000 * (p / startPrice));
 
+    const bh = downsample(data.btc_price.timestamps, bhEquity);
+    const nf = downsample(data.equity_charts.no_filter.timestamps, data.equity_charts.no_filter.equity);
+    const so = downsample(data.equity_charts.short_only.timestamps, data.equity_charts.short_only.equity);
+    const fp = downsample(data.equity_charts.full_protection.timestamps, data.equity_charts.full_protection.equity);
+
     const traces = [
       {
-        x: data.btc_price.timestamps,
-        y: bhEquity,
+        x: bh.x,
+        y: bh.y,
         name: t("legend-bh"),
         line: { color: C.price, width: 1.2 },
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-bh") + "</extra>",
       },
       {
-        x: data.equity_charts.no_filter.timestamps,
-        y: data.equity_charts.no_filter.equity,
+        x: nf.x,
+        y: nf.y,
         name: t("legend-no-filter"),
         line: { color: C.noFilter, width: 1.2, dash: "dot" },
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-no-filter") + "</extra>",
       },
       {
-        x: data.equity_charts.short_only.timestamps,
-        y: data.equity_charts.short_only.equity,
+        x: so.x,
+        y: so.y,
         name: t("legend-short-only"),
         line: { color: C.shortOnly, width: 1.5 },
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-short-only") + "</extra>",
       },
       {
-        x: data.equity_charts.full_protection.timestamps,
-        y: data.equity_charts.full_protection.equity,
+        x: fp.x,
+        y: fp.y,
         name: t("legend-full"),
         line: { color: C.full, width: 2 },
         hovertemplate: "%{x|%Y-%m-%d}<br>$%{y:,.0f}<extra>" + t("legend-full") + "</extra>",
@@ -653,10 +667,11 @@
       .filter((sc) => data.drawdown_charts[sc.key])
       .map((sc) => {
         const dd = data.drawdown_charts[sc.key];
+        const ds = downsample(dd.timestamps, dd.drawdown_pct);
         const name = t(legendKeys[sc.key]);
         return {
-          x: dd.timestamps,
-          y: dd.drawdown_pct,
+          x: ds.x,
+          y: ds.y,
           name,
           line: { color: sc.color, width: sc.width, dash: sc.dash },
           fill: sc.fill,
