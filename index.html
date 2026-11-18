@@ -10,66 +10,65 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
-/* CoinKarma look (tokens from the site's globals.css and the earlier ultron-evolution page): dark first, teal accent, 8px radius, Inter.
-   layout: one reading column; a hero card (badge, title, two figures), then sections, charts in cards, timeline, FAQ.
+/* Look of the existing coinkarma.co/ultron-evolution page (dark only): sticky top bar, a centred hero card, every section in its own card,
+   darker inner panels for charts and tables, tinted flow boxes, a teal timeline, FAQ as collapsed rows.
    colour roles: grey = BTC, yellow = 原本的 Ultron, teal = 加上資金濾網 (brand accent), red = filter-on stretches */
 :root{
-  --page:hsl(210 4% 9.8%); --surface:hsl(210 2.7% 14.5%); --ink:hsl(0 0% 98%); --ink2:hsl(240 5% 80%); --muted:hsl(240 5% 64.9%);
+  --page:hsl(210 4% 9.8%); --surface:hsl(210 2.7% 14.5%); --panel:hsl(210 3% 11%);
+  --ink:hsl(0 0% 98%); --ink2:hsl(240 5% 72%); --muted:hsl(240 5% 64.9%);
   --grid:hsl(240 3.7% 20%); --axis:hsl(240 3.7% 32%); --border:hsl(240 3.7% 20%);
-  --accent:#39d3ae; --live:#f0b429; --rule:#39d3ae; --danger:#ee6058;
+  --accent:#39d3ae; --live:#f0b429; --rule:#39d3ae; --danger:#ee6058; --yellow:#f0b429;
   --wash:rgba(238,96,88,.17); --note:rgba(240,180,41,.10); --pill:rgba(57,211,174,.12);
-  --hero-a:hsl(210 4% 12%); --hero-b:hsl(210 4% 16%); --bar:hsla(210,4%,9.8%,.92);
+  --bar:hsla(210,4%,9.8%,.95);
   color-scheme:dark;
 }
-@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
-  --page:hsl(0 0% 100%); --surface:hsl(240 5% 97.3%); --ink:hsl(0 0% 10.6%); --ink2:hsl(240 4% 28%); --muted:hsl(240 3.8% 43.1%);
-  --grid:hsl(240 5.9% 92%); --axis:hsl(240 5.9% 78%); --border:hsl(240 5.9% 90%);
-  --accent:#0e9f7f; --live:#c27c00; --rule:#0e9f7f; --danger:#d8483f;
-  --wash:rgba(216,72,63,.12); --note:rgba(194,124,0,.09); --pill:rgba(14,159,127,.10);
-  --hero-a:hsl(240 5% 97.5%); --hero-b:hsl(240 5% 94.5%); --bar:hsla(0,0%,100%,.92);
-  color-scheme:light } }
-:root[data-theme="light"]{
-  --page:hsl(0 0% 100%); --surface:hsl(240 5% 97.3%); --ink:hsl(0 0% 10.6%); --ink2:hsl(240 4% 28%); --muted:hsl(240 3.8% 43.1%);
-  --grid:hsl(240 5.9% 92%); --axis:hsl(240 5.9% 78%); --border:hsl(240 5.9% 90%);
-  --accent:#0e9f7f; --live:#c27c00; --rule:#0e9f7f; --danger:#d8483f;
-  --wash:rgba(216,72,63,.12); --note:rgba(194,124,0,.09); --pill:rgba(14,159,127,.10);
-  --hero-a:hsl(240 5% 97.5%); --hero-b:hsl(240 5% 94.5%); --bar:hsla(0,0%,100%,.92);
-  color-scheme:light }
 *{box-sizing:border-box}
-body{margin:0;background:var(--page);color:var(--ink);font:16px/1.8 Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-main{max-width:760px;margin:0 auto;padding-block:28px 72px;padding-left:max(18px, env(safe-area-inset-left, 0px));padding-right:max(18px, env(safe-area-inset-right, 0px))}
-.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:8;background:var(--bar);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.top .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;padding-left:max(18px, env(safe-area-inset-left, 0px));padding-right:max(18px, env(safe-area-inset-right, 0px))}
-.top b{font-size:15px;font-weight:700;letter-spacing:.01em}
-.top b span{color:var(--accent)}
-.top a{font-size:13.5px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:3px 12px}
-.top a:hover,.top a:focus-visible{color:var(--ink);border-color:var(--axis)}
-.hero{background:linear-gradient(160deg,var(--hero-a),var(--hero-b));border:1px solid var(--border);border-radius:8px;padding:26px 24px 22px;margin:0 0 8px}
-.badge{display:inline-block;margin:0 0 14px;padding:3px 12px;border-radius:999px;background:var(--pill);color:var(--accent);font-size:12.5px;font-weight:500;letter-spacing:.06em}
-h1{font-size:28px;line-height:1.35;margin:0 0 14px;font-weight:700;text-wrap:balance}
-h2{font-size:21px;line-height:1.4;margin:52px 0 10px;font-weight:700;text-wrap:balance}
-h3{font-size:17px;line-height:1.5;margin:26px 0 6px;font-weight:700}
+body{margin:0;background:var(--page);color:var(--ink2);font:14.5px/1.75 Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:884px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:24px}
+strong,b{color:var(--ink);font-weight:600}
 p{margin:10px 0}
-.lead{color:var(--ink2);font-size:16px;margin:0}
-.lead + .lead{margin-top:10px}
-.lead strong{color:var(--ink)}
-.small{font-size:13.5px;color:var(--muted);line-height:1.65}
-ul{margin:10px 0;padding-left:22px}
-li{margin:8px 0}
-li::marker{color:var(--accent)}
-.callout{background:var(--note);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:20px 0}
+.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:8;background:var(--bar);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.top .in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;padding-left:max(24px, env(safe-area-inset-left, 0px));padding-right:max(24px, env(safe-area-inset-right, 0px))}
+.top .brand{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:.01em}
+.top .brand svg{display:block}
+.top a{font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:3px 12px}
+.top a:hover,.top a:focus-visible{color:var(--ink);border-color:var(--axis)}
+.hero{background:linear-gradient(160deg,hsl(210 4% 12%),hsl(210 4% 16%));border:1px solid var(--border);border-radius:8px;padding:56px 32px 44px;text-align:center}
+.badge{display:inline-block;margin:0 0 18px;padding:3px 12px;border-radius:999px;background:var(--pill);color:var(--accent);font-size:11.5px;font-weight:500;letter-spacing:.08em}
+h1{font-size:30px;line-height:1.35;margin:0 auto 16px;font-weight:700;color:var(--ink);max-width:24em}
+h1 span{display:inline-block}
+.lead{color:var(--muted);font-size:15px;line-height:1.75;margin:0 auto;max-width:38em}
+.lead + .lead{margin-top:8px}
+.pair{display:flex;justify-content:center;flex-wrap:wrap;gap:16px 64px;margin:34px 0 0}
+.stat{min-width:0;max-width:19em}
+.stat b{display:block;font-size:30px;line-height:1.2;font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.stat span{display:block;font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:32px;min-width:0}
+h2{font-size:20px;line-height:1.4;margin:0 0 14px;font-weight:600;color:var(--ink);text-wrap:balance}
+h3{font-size:15.5px;line-height:1.5;margin:26px 0 6px;font-weight:600;color:var(--ink)}
+.sec > h3:first-of-type{margin-top:4px}
+hr.split{border:0;border-top:1px solid var(--border);margin:26px 0 0}
+.small{font-size:12.5px;color:var(--muted);line-height:1.65}
+ol.num{list-style:none;margin:14px 0;padding:0;counter-reset:n}
+ol.num li{counter-increment:n;position:relative;padding:11px 0 11px 34px;border-bottom:1px solid var(--border);margin:0}
+ol.num li:last-child{border-bottom:0}
+ol.num li::before{content:counter(n);position:absolute;left:0;top:12px;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--pill);color:var(--accent);font-size:12px;font-weight:600}
+ul{margin:10px 0;padding-left:20px}
+li{margin:6px 0}
+ul li::marker{color:var(--accent)}
+.flow{display:flex;align-items:stretch;gap:10px;margin:16px 0 8px}
+.fbox{flex:1 1 0;min-width:0;border-radius:8px;padding:14px 14px 12px;border:1px solid;text-align:center}
+.fbox b{display:block;font-size:14.5px;font-weight:600}
+.fbox span{display:block;font-size:12.5px;line-height:1.6;margin-top:4px;color:var(--ink2)}
+.fbox.red{background:rgba(238,96,88,.10);border-color:rgba(238,96,88,.35)} .fbox.red b{color:var(--danger)}
+.fbox.yel{background:rgba(240,180,41,.10);border-color:rgba(240,180,41,.35)} .fbox.yel b{color:var(--yellow)}
+.fbox.grn{background:rgba(57,211,174,.10);border-color:rgba(57,211,174,.35)} .fbox.grn b{color:var(--accent)}
+.arr{align-self:center;color:var(--muted);font-style:normal;font-size:18px;flex:none}
+.callout{background:var(--note);border:1px solid rgba(240,180,41,.30);border-radius:8px;padding:14px 18px;margin:20px 0 0}
 .callout p{margin:4px 0}
-.pair{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0 0}
-.stat{background:var(--page);border:1px solid var(--border);border-radius:8px;padding:14px 16px;min-width:0}
-.stat b{display:block;font-size:27px;line-height:1.2;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
-.stat span{display:block;font-size:14px;color:var(--muted);line-height:1.6;margin-top:6px}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;counter-reset:s}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;min-width:0;counter-increment:s}
-.step b{display:block;font-size:17px;font-weight:700;line-height:1.45}
-.step b::before{content:counter(s);display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;background:var(--pill);color:var(--accent);font-size:13px;margin-right:8px;vertical-align:2px}
-.step span{display:block;font-size:14.5px;color:var(--ink2);line-height:1.7;margin-top:6px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 16px 12px;margin:16px 0;min-width:0}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink2);margin:0 0 8px}
+.callout b{color:var(--yellow)}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 16px 12px;margin:16px 0;min-width:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin:0 0 8px}
 .legend span{display:inline-flex;align-items:center;gap:7px}
 .key{display:inline-block;width:18px;height:0;border-top:2px solid var(--muted)}
 .key.live{border-top-color:var(--live)} .key.rule{border-top-color:var(--rule)}
@@ -77,62 +76,74 @@ li::marker{color:var(--accent)}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
 .chart{position:relative;width:100%}
 .chart svg{display:block;width:100%;touch-action:pan-y}
-.tick{font-size:12px;fill:var(--muted);font-variant-numeric:tabular-nums}
-.endv{font-size:12.5px;fill:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
-.band{font-size:12px;fill:var(--ink2);font-variant-numeric:tabular-nums}
-#tip{position:fixed;z-index:9;pointer-events:none;background:var(--surface);border:1px solid var(--axis);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:8px 10px;font-size:13px;line-height:1.55;min-width:150px}
+.tick{font-size:11.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.endv{font-size:12px;fill:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.band{font-size:11.5px;fill:var(--ink2);font-variant-numeric:tabular-nums}
+#tip{position:fixed;z-index:9;pointer-events:none;background:var(--surface);border:1px solid var(--axis);border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:8px 10px;font-size:12.5px;line-height:1.55;min-width:150px;color:var(--ink2)}
 #tip .h{color:var(--muted);margin-bottom:3px}
 #tip .r{display:flex;gap:12px;justify-content:space-between;align-items:center}
-#tip .r span{color:var(--ink2);display:inline-flex;align-items:center;gap:6px}
-#tip .r b{font-variant-numeric:tabular-nums;font-weight:700}
+#tip .r span{display:inline-flex;align-items:center;gap:6px}
+#tip .r b{font-variant-numeric:tabular-nums}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;min-width:500px;font-variant-numeric:tabular-nums}
-th{font-size:13px;font-weight:500;color:var(--muted);text-align:right;padding:6px 8px 8px;border-bottom:1px solid var(--axis);vertical-align:bottom;line-height:1.45}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:right;padding:6px 8px 8px;border-bottom:1px solid var(--axis);vertical-align:bottom;line-height:1.45}
 th:first-child,td:first-child{text-align:left;padding-left:2px}
 th span{display:inline-flex;align-items:center;gap:6px}
-td{padding:10px 8px;border-bottom:1px solid var(--grid);text-align:right;vertical-align:top;line-height:1.45}
+td{padding:10px 8px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top;line-height:1.45}
 tr:last-child td{border-bottom:0}
-td b{display:block;font-size:15.5px;font-weight:700}
-td i{display:block;font-style:normal;font-size:12.5px;color:var(--muted)}
+td b{display:block;font-size:14.5px;font-weight:600}
+td i{display:block;font-style:normal;font-size:12px;color:var(--muted)}
 tr.now td{background:var(--note)}
-.evo{list-style:none;margin:16px 0;padding:0 0 0 18px;border-left:2px solid var(--grid)}
-.evo li{position:relative;margin:0;padding:0 0 18px 16px}
-.evo li:last-child{padding-bottom:0}
-.evo li::before{content:"";position:absolute;left:-25px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--page);border:2px solid var(--axis)}
-.evo li.now::before{background:var(--accent);border-color:var(--accent)}
-.evo b{display:block;font-size:16px;font-weight:700;line-height:1.5}
-.evo span{display:block;font-size:14.5px;color:var(--ink2);line-height:1.7}
-.faq h3{margin-top:28px;padding-top:18px;border-top:1px solid var(--grid)}
-.faq h3:first-child{margin-top:8px}
-.faq p,.faq li{color:var(--ink2);font-size:15.5px}
-footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--grid);color:var(--muted);font-size:13px;line-height:1.7}
+.evo{list-style:none;margin:18px 0 0;padding:0 0 0 22px;border-left:2px solid var(--accent)}
+.evo li{position:relative;margin:0;padding:0 0 26px 6px}
+.evo li:last-child{padding-bottom:2px}
+.evo li::before{content:"";position:absolute;left:-29px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--surface)}
+.evo li.now::before{background:var(--accent);box-shadow:0 0 0 3px rgba(57,211,174,.25)}
+.evo em{display:block;font-style:normal;font-size:12.5px;color:var(--accent)}
+.evo b{display:block;font-size:14.5px;line-height:1.6}
+.evo span{display:block;font-size:13.5px;color:var(--muted);line-height:1.7}
+.faq{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.qa{border:1px solid var(--border);border-radius:6px;background:var(--panel)}
+.qa summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;font-size:14.5px;font-weight:600;color:var(--ink)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";flex:none;font-size:18px;font-weight:400;color:var(--muted);line-height:1}
+.qa[open] summary::after{content:"−"}
+.qa summary:hover::after{color:var(--ink)}
+.qa summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.qa .ans{padding:0 16px 14px;border-top:1px solid var(--border)}
+.qa .ans p,.qa .ans li{font-size:14px}
+footer{border-top:1px solid var(--border);padding-top:22px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
 a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (max-width:640px){
-  h1{font-size:24px}
-  .hero{padding:20px 16px 16px}
-  .steps{grid-template-columns:1fr}
-  .stat b{font-size:24px}
-  .pair{grid-template-columns:1fr}
+  h1{font-size:23px}
+  .hero{padding:36px 18px 30px}
+  .sec{padding:22px 18px}
+  .pair{gap:18px}
+  .stat b{font-size:26px}
+  .flow{flex-direction:column}
+  .arr{transform:rotate(90deg)}
   table{min-width:0}
   th,td{padding-left:4px;padding-right:4px}
-  th{font-size:12px}
+  th{font-size:11.5px}
   th span{flex-wrap:wrap;justify-content:flex-end}
-  td b{font-size:14px}
+  td b{font-size:13.5px}
   td i{font-size:11px}
+  td:first-child b{font-size:12.5px}
+  td:first-child{width:25%}
+  td i{white-space:nowrap;font-size:10.5px}
+  th,td{padding-left:3px;padding-right:3px}
   .lg{display:none}
-  td:first-child b{font-size:13px}
-  td:first-child{width:28%}
-  .band{font-size:11px}
+  .band{font-size:10.5px}
+  .panel{padding:10px 6px 8px}
 }
 </style>
 </head>
 <body>
-<header class="top"><div class="in"><b>CoinKarma <span>Ultron</span></b><a href="/ultron-signal">Ultron 信號頁</a></div></header>
+<header class="top"><div class="in"><span class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>CoinKarma Ultron</span><a href="/ultron-signal">Ultron 信號頁</a></div></header>
 <main>
-
 <section class="hero">
 <p class="badge">策略升級報告</p>
-<h1>從減碼到換邊：Ultron 面對單邊下跌的新做法</h1>
+<h1><span>從減碼到換邊：</span><span>Ultron 面對單邊下跌的新做法</span></h1>
 <p class="lead">2026 年的比特幣，走出了兩個 2011 年有紀錄以來首見的型態：一年內兩次週線六連跌，以及大幅突破 200 週均線後不到三個月又跌回線下。這種跌了不彈的單邊行情，正是波段策略最難應付的。Ultron 的淨值在這一波自 3.5 回落至 2.5。</p>
 <p class="lead">面對這次回撤，我們改進了 Ultron 做多的濾網，並於今天（11 月 18 日）上線。</p>
 <div class="pair">
@@ -140,39 +151,45 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <div class="stat"><b>−28% → −11%</b><span>九段之中，途中最深回落的改善</span></div>
 </div>
 </section>
-
+<section class="sec">
 <h2>Ultron 在什麼行情會吃虧</h2>
 <p>Ultron 是做波段的策略，以 MPI 判讀市場冷熱：市場冷卻時分批買進，過熱時賣出。行情有來有回時，每一次反彈都是調整部位、壓低成本的機會。</p>
 <p>它的弱點是單邊下跌。當價格失去彈性、跌了不彈，指標會長時間停在低檔，Ultron 持續加碼，卻沒有波段可以把部位減下來，回撤就容易擴大。這一波正是這種行情。</p>
-
+</section>
+<section class="sec">
 <h2>我們找到的共同特徵</h2>
 <p>把 2022 年以來的下跌逐段攤開，Ultron 最吃虧的那幾段，都是兩件事同時發生：</p>
-<ul>
+<ol class="num">
   <li><b>價格跌破 50 日均線。</b>趨勢已經轉弱。</li>
   <li><b>場內資金明顯減少。</b>近 30 天穩定幣總量明顯縮水，或比特幣現貨 ETF 近 30 天持續淨流出。</li>
-</ul>
+</ol>
 <p>趨勢轉弱，同時幣圈資金正在流出。這種下跌最難出現像樣的反彈。資金濾網每天檢查這兩件事，同時成立就啟動。</p>
-<div class="card">
+<div class="panel">
   <div class="legend"><span><i class="key"></i>比特幣價格</span><span><i class="sw"></i>濾網成立</span></div>
   <div class="chart" id="c-price" role="img" aria-label="2022 年 8 月以來的比特幣價格，標出濾網成立的九段時期"></div>
   <p class="small">紅色是濾網成立的時期，上方的數字是成立之後比特幣途中最深的跌幅。2022 年 8 月以來共九段，包含眼前這一波。其中八段在濾網成立後，比特幣又下跌超過一成；四段超過兩成。美國現貨 ETF 於 2024 年 1 月上市，在那之前只看穩定幣。</p>
 </div>
-
+</section>
+<section class="sec">
 <h2>防護機制</h2>
 <h3>既有的第一層：均線減碼</h3>
 <p>長期均線轉弱時，自動降低 Ultron 的多單曝險。這一波它在 11 月 8 日啟動，大幅降低了回撤：啟動之後那一段，Ultron 的跌幅少了一半。</p>
 <p>減碼能控制損失，但部位仍然在場內。面對真正的單邊下跌，需要一層會讓 Ultron 離場、並且換邊的機制。</p>
+<hr class="split">
 <h3>新的一層：資金濾網（今天上線）</h3>
-<div class="steps">
-  <div class="step"><b>平多單</b><span>多單全部平倉，不再加碼。</span></div>
-  <div class="step"><b>開空單</b><span>不看 MPI，直接持有 1 倍空單。</span></div>
-  <div class="step"><b>等解除</b><span>價格站回均線，或資金重新流入，就回到原本的波段操作。</span></div>
+<div class="flow">
+  <div class="fbox red"><b>平多單</b><span>多單全部平倉，不再加碼。</span></div>
+  <i class="arr" aria-hidden="true">→</i>
+  <div class="fbox yel"><b>開空單</b><span>不看 MPI，直接持有 1 倍空單。</span></div>
+  <i class="arr" aria-hidden="true">→</i>
+  <div class="fbox grn"><b>等解除</b><span>價格站回均線，或資金重新流入，就回到原本的波段操作。</span></div>
 </div>
 <p class="small">空單的平倉條件和其他細節，放在下方的常見問題。</p>
-
+</section>
+<section class="sec">
 <h2>結果對比</h2>
 <p>把資金濾網套回歷史上的九段，和原本的 Ultron 逐段比較。</p>
-<div class="card">
+<div class="panel">
   <div class="scroll">
   <table>
     <thead><tr>
@@ -188,10 +205,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </div>
 <p>九段全數改善。原本的 Ultron 有六段虧損，途中最深回落 28%；加上濾網後只有一段小虧，途中最深回落 11%。</p>
 <p class="small">兩欄都是回測，不是當時帳戶的實際表現。「原本的 Ultron」是今天上線前的版本，其中幾層保護是今年才加上的，所以 2025 年 11 月、2026 年 1 月、2026 年 5 月這三段在表中有獲利，和當時的實際表現不同。</p>
-
+</section>
+<section class="sec">
 <h2>眼前這一波的對比</h2>
 <p>自 10 月 2 日的淨值高點起算，到 11 月 17 日。三條線都以高點為 100。</p>
-<div class="card">
+<div class="panel">
   <div class="legend"><span><i class="key"></i>比特幣</span><span><i class="key live"></i>原本的 Ultron</span><span><i class="key rule"></i>加上資金濾網</span><span><i class="sw"></i>濾網成立</span></div>
   <div class="chart" id="c-wave" role="img" aria-label="10 月 2 日到 11 月 17 日：比特幣從 100 到 74，原本的 Ultron 從 100 到 70，加上資金濾網從 100 到 123"></div>
 </div>
@@ -202,21 +220,25 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <p>比特幣已經下跌 26%，這時才平多單、追空單，等於在跌深的位置換邊。所以這一波 Ultron 照原本的方式運作，均線減碼持續作用。</p>
   <p>等這次的濾網解除後，下一次成立就會動作。</p>
 </div>
-
+</section>
+<section class="sec">
 <h2>策略進化歷程</h2>
 <p>Ultron 不是一個靜態的策略。每一次市場事件都是學習的機會，防線是一層一層疊上去的。</p>
 <ol class="evo">
-  <li><b>Market Pulse Index 整合</b><span>由流動性指標分批進場，改為以 MPI 動態調整倉位。</span></li>
-  <li><b>空單過濾器</b><span>避免在單邊上漲時過早做空。</span></li>
-  <li><b>動態閾值</b><span>依當下行情自動調整多空的進出場條件。</span></li>
-  <li><b>均線減碼與崩盤偵測</b><span>2026 年初的極端事件之後加入，價格跌破長期均線時降低多單曝險。</span></li>
-  <li><b>頂部辨識防守</b><span>2026 年 9 月，以 ILI 辨識頂部，頂部出現後進入防守。</span></li>
-  <li class="now"><b>資金濾網與主動做空</b><span>2026 年 11 月。不需要先辨識頂部，直接看資金是否離場；成立時平多單並轉空。</span></li>
+  <li><em>2025 年 2 月</em><b>Market Pulse Index 整合</b><span>由流動性指標分批進場，改為以 MPI 動態調整倉位。</span></li>
+  <li><em>2025 年 9 月</em><b>空單過濾器</b><span>避免在單邊上漲時過早做空。</span></li>
+  <li><em>2025 年 10 月</em><b>動態閾值</b><span>依當下行情自動調整多空的進出場條件。</span></li>
+  <li><em>2026 年 2 月</em><b>均線減碼與崩盤偵測</b><span>極端事件之後加入，價格跌破長期均線時降低多單曝險。</span></li>
+  <li><em>2026 年 9 月</em><b>頂部辨識防守</b><span>以 ILI 辨識頂部，頂部出現後進入防守。</span></li>
+  <li class="now"><em>2026 年 11 月</em><b>資金濾網與主動做空</b><span>不需要先辨識頂部，直接看資金是否離場；成立時平多單並轉空。</span></li>
 </ol>
-
+</section>
+<section class="sec">
 <h2>常見問題</h2>
 <div class="faq">
-  <h3>之前不是已經做過濾網，為什麼還是有這麼大的回撤？</h3>
+  <details class="qa">
+    <summary>之前不是已經做過濾網，為什麼還是有這麼大的回撤？</summary>
+    <div class="ans">
   <p>因為這一波是比特幣十五年來沒有出現過的走法。</p>
   <p>既有的第一層防線在這一波仍然有作用：均線減碼在下跌途中啟動，把槓桿部位直接砍到一倍左右，大幅降低了回撤。</p>
   <p>但第二層的 OI、LSUR 濾網，條件來不及成立就已經開始崩盤。這個濾網只會在價格跌破 120 日均線超過 5 天後才啟動。</p>
@@ -225,8 +247,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <p>這次是比特幣史上第一次，大幅突破 200 週均線之後不到三個月又跌回線下。下跌剛開始時，價格還在 120 日均線上方 20% 左右；從確定跌破 120 日均線（11 月 10 日）開始，只花了 4 天就直接跌回 8 月的起漲點，四天跌了一萬多點。第二層濾網的確認期還沒走完，跌勢就已經完成。</p>
   <p>簡單來說，「跌得太快」和「漲得不夠多就開始跌」，是這次第二層、第三層濾網沒有生效的原因。</p>
   <p>這次新上線的資金濾網，不需要等確認期，也不仰賴 ILI 猜頂，直接看比特幣趨勢轉弱時資金是否離場。從邏輯上更合理，也更靈敏，也涵蓋了今年三次讓 Ultron 出現重大回撤的單邊下跌。</p>
-
-  <h3>2025 年底才開始跟單，一年下來幾乎沒賺，這個策略還有效嗎？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>2025 年底才開始跟單，一年下來幾乎沒賺，這個策略還有效嗎？</summary>
+    <div class="ans">
   <p>2026 年是 Ultron 比較辛苦的一年。比特幣在這一年出現了三次單邊下跌，分別在 1 到 2 月、5 到 7 月、10 到 11 月，每一次都讓淨值明顯回落。2025 年底開始跟單的會員，體感會是很難賺到錢。</p>
   <p>但把每一次淨值回到高點時的比特幣價格攤開來看，是另一個畫面：</p>
   <ul>
@@ -237,19 +262,31 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   </ul>
   <p>比特幣一路走低，Ultron 回到高點所需要的價格卻沒有跟著墊高。5 月時比特幣比 1 月低了一萬多，淨值回到同一個水準；9 月創新高時，比特幣仍然比 1 月低。前兩次單邊下跌之後，Ultron 都靠波段把淨值做了回來，不需要等比特幣漲回原本的價格。</p>
   <p>每一次遇到新的行情，我們都會持續更新策略。這次更新的資金濾網，邏輯上直接看幣圈資金的進出，反應速度上不需要等確認期，兩方面都比過去的做法更好。</p>
-
-  <h3>Ultron 是一個只會做多、仰賴比特幣價格的策略嗎？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>Ultron 是一個只會做多、仰賴比特幣價格的策略嗎？</summary>
+    <div class="ans">
   <p>Ultron 是多空都做的策略，但整體上比較傾向做多，只有各方面指標都非常過熱時才會做空。到目前為止的 86 次部位裡，有 20 次是空單。</p>
   <p>這次的濾網補上之後，在下跌尾部風險急劇上升的時候會開出空單，相當於多了一個右側開空的機制。所以未來的 Ultron 會是一個多空更平衡的策略。</p>
   <p>提高空單比例也和今年的行情有關。比特幣一年內出現兩次週線六連跌，是 2011 年有紀錄以來第一次，下跌的走法已經和過去不同。</p>
-
-  <h3>為什麼新濾網不直接套用在這一波？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>為什麼新濾網不直接套用在這一波？</summary>
+    <div class="ans">
   <p>濾網的優勢來自及早換邊。這一波的條件在 10 月 23 日就已成立，現在比特幣已下跌 26%，此時才平掉所有多單、反手做空，承擔的是反彈的風險，拿不到及早離場的好處。所以規則設計為自下一次成立起生效。</p>
-
-  <h3>資金濾網有沒有回測過度擬合的風險？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>資金濾網有沒有回測過度擬合的風險？</summary>
+    <div class="ans">
   <p>濾網只看兩類條件：價格趨勢與資金流向。它判斷的是市場有沒有資金承接，並不針對任何單一事件。九段結果方向一致，我們也另外做了獨立重算，數字相符。但回測終究是回測，這些規則是看著同一段歷史設計的，未來的實際表現會比回測保守。</p>
-
-  <h3>濾網期間做空，什麼時候會平倉？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>濾網期間做空，什麼時候會平倉？</summary>
+    <div class="ans">
   <p>濾網期間的空單不看 MPI，有獨立的平倉條件，任一項成立就平倉：</p>
   <ul>
     <li>Overall LIQ（10% 深度）的 4 小時平均超過 5,000 BTC，之後有小時收盤站上前 4 小時的高點。代表掛單簿上的買盤回來了，價格也開始反應。</li>
@@ -258,15 +295,23 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   </ul>
   <p>空單在場的期間，Ultron 不會做多參與反彈。從回測來看，這類空單虧的時候都是小虧，賺的時候是一大段：2022 年 8 月以來共 15 筆，4 筆虧損，最大一筆 −2.1%；11 筆獲利，平均 +9.5%。</p>
   <p>空單平倉之後，若價格連續幾天不再破底，Ultron 會提早恢復做多，倉位先減半。</p>
-
-  <h3>資金濾網擋得住所有回撤嗎？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>資金濾網擋得住所有回撤嗎？</summary>
+    <div class="ans">
   <p>不是。它處理的是資金退潮型的下跌。價格仍在均線之上、資金仍在流入時出現的急跌，不在它的守備範圍。那是我們已經開始的下一個研究題目。</p>
   <p>例如 2024 年 8 月 5 日，日本央行引發的那種急跌，資金濾網不會啟動，因為那不是資金面能處理的行情。這類急跌交給第一層：均線減碼直接把多單倉位砍半。以現在的規則回測，那一次減碼在 8 月初就已經啟動。</p>
-
-  <h3>我需要做什麼？</h3>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>我需要做什麼？</summary>
+    <div class="ans">
   <p>不需要。無論是直接跟單 Ultron，或是透過 Zeus，濾網都會自動執行。Zeus 裡的 Ultron 部位跟隨的是同一個 Ultron。</p>
+    </div>
+  </details>
 </div>
-
+</section>
 <footer>
 本頁的報酬與回落數字，均為將規則套回歷史資料的回測結果，並非帳戶實際績效。這些規則是參照同一段歷史行情設計的，回測結果會優於未來的實際表現。資料統計至 2026 年 11 月 17 日 09:00 UTC；週線統計採用 Bitstamp 自 2011 年 8 月以來的資料，計算至 2026 年 11 月 15 日。過去績效不代表未來表現。
 </footer>
