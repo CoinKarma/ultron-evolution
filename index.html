@@ -1,983 +1,453 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CoinKarma Ultron — Filter Showcase</title>
-  <meta name="description" content="Master the Crypto Market with Data-Driven Trading Insights." />
-  <link rel="icon" href="/ultron-evolution/favicon.ico" sizes="16x16" type="image/x-icon" />
-  <meta property="og:title" content="CoinKarma Ultron — Post-Crisis Protection" />
-  <meta property="og:description" content="How we turned a -5.65σ event into stronger protection. Backtests show nearly halved maximum drawdown." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://coinkarma.co/images/favicon-dark.svg" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="CoinKarma Ultron — Post-Crisis Protection" />
-  <meta name="twitter:description" content="How we turned a -5.65σ event into stronger protection. Backtests show nearly halved maximum drawdown." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" crossorigin="anonymous"></script>
-  <style>
-    :root {
-      --bg: hsl(210 4% 9.8%);
-      --bg-card: hsl(210 2.7% 14.5%);
-      --bg-input: hsl(240 3.7% 18%);
-      --fg: hsl(0 0% 98%);
-      --muted: hsl(240 5% 64.9%);
-      --border: hsl(240 3.7% 20%);
-      --accent: #39d3ae;
-      --red: #ee6058;
-      --green: #39d3ae;
-      --yellow: #f0b429;
-      --radius: 8px;
-      --radius-sm: 4px;
-      --radius-md: 6px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--fg);
-      background: var(--bg);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── Header ── */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      background: hsla(210, 4%, 9.8%, 0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-    .site-header .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--fg);
-      text-decoration: none;
-    }
-    .site-header .logo svg { flex-shrink: 0; }
-
-    .lang-switcher {
-      margin-left: auto;
-      display: flex;
-      gap: 4px;
-    }
-    .lang-btn {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-size: 12px;
-      font-family: inherit;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .lang-btn:hover { color: var(--fg); border-color: var(--muted); }
-    .lang-btn.active {
-      background: var(--accent);
-      color: hsl(210 4% 9.8%);
-      border-color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* ── Layout ── */
-    .page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 32px 24px 64px;
-    }
-
-    /* ── Card ── */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      margin-bottom: 24px;
-    }
-
-    /* ── Hero ── */
-    .hero {
-      text-align: center;
-      padding: 56px 32px;
-      background: linear-gradient(160deg, hsl(210 4% 12%), hsl(210 4% 16%));
-    }
-    .hero-badge {
-      display: inline-block;
-      padding: 4px 14px;
-      border-radius: 999px;
-      background: rgba(57,211,174,0.12);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 20px;
-    }
-    .hero-title {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 12px;
-    }
-    .hero-subtitle {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 36px;
-      line-height: 1.65;
-    }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-    }
-    .hero-stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .hero-stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent);
-      font-variant-numeric: tabular-nums;
-    }
-    .hero-stat-value.negative { color: var(--red); }
-    .hero-stat-label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── Sections ── */
-    .section-title {
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
-    }
-    .section-body {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-    .section-body strong { color: var(--fg); }
-
-    .subsection {
-      margin-top: 28px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-    .subsection-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    /* ── MA Tiers ── */
-    .ma-tiers {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 16px;
-      max-width: 480px;
-    }
-    .ma-tier {
-      height: 38px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .ma-tier-normal {
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-    }
-    .ma-tier-120 {
-      width: 50%;
-      background: rgba(57,211,174,0.15);
-      color: var(--accent);
-    }
-    .ma-tier-180 {
-      width: 40%;
-      background: rgba(240,180,41,0.15);
-      color: var(--yellow);
-    }
-
-    /* ── FSM Diagram ── */
-    .fsm-diagram {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      margin: 24px 0;
-      overflow-x: auto;
-      padding: 8px 0;
-    }
-    .fsm-state {
-      padding: 14px 16px;
-      border-radius: var(--radius);
-      font-size: 12px;
-      font-weight: 600;
-      text-align: center;
-      white-space: nowrap;
-      min-width: 130px;
-      line-height: 1.5;
-      flex-shrink: 0;
-    }
-    .fsm-normal {
-      background: rgba(57,211,174,0.1);
-      border: 1px solid rgba(57,211,174,0.25);
-      color: var(--accent);
-    }
-    .fsm-cooldown {
-      background: rgba(238,96,88,0.1);
-      border: 1px solid rgba(238,96,88,0.25);
-      color: var(--red);
-    }
-    .fsm-monitor {
-      background: rgba(240,180,41,0.1);
-      border: 1px solid rgba(240,180,41,0.25);
-      color: var(--yellow);
-    }
-    .fsm-arrow {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 6px;
-      color: var(--muted);
-      font-size: 10px;
-      flex-shrink: 0;
-    }
-    .fsm-arrow::before {
-      content: "\2192";
-      font-size: 18px;
-      margin-bottom: 2px;
-    }
-
-    /* ── Re-entry list ── */
-    .reentry-list {
-      margin-top: 16px;
-      padding-left: 0;
-      list-style: none;
-    }
-    .reentry-list li {
-      position: relative;
-      padding: 10px 0 10px 28px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      border-bottom: 1px solid var(--border);
-    }
-    .reentry-list li:last-child { border-bottom: none; }
-    .reentry-list li::before {
-      content: attr(data-num);
-      position: absolute;
-      left: 0;
-      top: 10px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: rgba(57,211,174,0.12);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .reentry-list li strong { color: var(--fg); }
-
-    /* ── Comparison Table ── */
-    .table-wrap { overflow-x: auto; margin-top: 16px; }
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .comparison-table th,
-    .comparison-table td {
-      padding: 12px 16px;
-      text-align: right;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-    .comparison-table th:first-child,
-    .comparison-table td:first-child {
-      text-align: left;
-    }
-    .comparison-table th {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      background: hsl(210 3% 12%);
-    }
-    .comparison-table .col-highlight {
-      background: rgba(57,211,174,0.04);
-    }
-    .comparison-table .col-highlight-head {
-      background: rgba(57,211,174,0.08);
-      color: var(--accent);
-    }
-    .val-pos { color: var(--green); font-weight: 600; }
-    .val-neg { color: var(--red); font-weight: 600; }
-
-    /* ── Chart ── */
-    .chart-section { margin-bottom: 24px; }
-    .chart-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .chart-header h2 {
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .chart-header p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .legend {
-      display: flex;
-      gap: 14px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .legend-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-    .scale-toggle {
-      display: flex;
-      gap: 4px;
-    }
-    .scale-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: var(--muted);
-      padding: 4px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.8rem;
-      transition: all 0.15s;
-    }
-    .scale-btn:hover { background: rgba(255,255,255,0.08); }
-    .scale-btn.active {
-      background: rgba(57,211,174,0.15);
-      color: var(--accent);
-      border-color: rgba(57,211,174,0.3);
-    }
-
-    /* ── Event Deep-Dive ── */
-    .event-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 20px 0 16px;
-    }
-    .event-tab {
-      padding: 6px 16px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .event-tab:hover { color: var(--fg); border-color: var(--muted); }
-    .event-tab.active {
-      background: rgba(57,211,174,0.12);
-      color: var(--accent);
-      border-color: rgba(57,211,174,0.3);
-      font-weight: 600;
-    }
-    .event-panel { display: none; }
-    .event-panel.active { display: block; }
-    .event-panel-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-      margin-bottom: 16px;
-    }
-    .event-panel-desc strong { color: var(--fg); }
-    .event-reason-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-    }
-    .event-reason-tag.reason-overlay_c {
-      background: rgba(57,211,174,0.12);
-      color: var(--accent);
-    }
-    .event-reason-tag.reason-ma-filter {
-      background: rgba(255,193,7,0.12);
-      color: var(--yellow);
-    }
-    .event-reason-tag.reason-signal,
-    .event-reason-tag.reason-sign_flip {
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-    }
-    .event-compare {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .event-scenario {
-      background: hsl(210 3% 11%);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-    }
-    .event-scenario-highlight {
-      border-color: rgba(57,211,174,0.25);
-    }
-    .event-scenario-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .trade-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      font-variant-numeric: tabular-nums;
-    }
-    .trade-table th {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      text-align: left;
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .trade-table td {
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      color: var(--muted);
-    }
-    .trade-table tr:last-child td { border-bottom: none; }
-    .trade-table .trade-action-entry { color: var(--accent); }
-    .trade-table .trade-action-exit { color: var(--red); }
-    .trade-table .trade-action-add { color: var(--yellow); }
-    .trade-table .trade-action-reduce { color: var(--yellow); }
-    .trade-omitted-row td {
-      text-align: center;
-      color: var(--muted);
-      font-style: italic;
-      font-size: 12px;
-      padding: 6px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.08);
-    }
-    .trade-summary {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    /* ── Event Summary Banner ── */
-    .event-summary-banner {
-      display: flex;
-      gap: 24px;
-      padding: 14px 16px;
-      background: hsl(210 3% 11%);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      margin-bottom: 16px;
-      font-size: 13px;
-      font-variant-numeric: tabular-nums;
-    }
-    .event-summary-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .event-summary-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .event-summary-value { font-weight: 600; }
-
-    /* ── Trade Toggle ── */
-    .trade-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      margin-top: 10px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: transparent;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .trade-toggle:hover { color: var(--fg); border-color: var(--muted); }
-    .trade-details { display: none; margin-top: 8px; }
-    .trade-details.expanded { display: block; }
-
-    /* ── FAQ Accordion ── */
-    .faq-list { display: flex; flex-direction: column; gap: 8px; }
-    .faq-item {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: hsl(210 3% 11%);
-      overflow: hidden;
-    }
-    .faq-item summary {
-      padding: 14px 16px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      transition: color 0.15s ease;
-    }
-    .faq-item summary::-webkit-details-marker { display: none; }
-    .faq-item summary::marker { display: none; }
-    .faq-item summary::after {
-      content: "+";
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--muted);
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-    .faq-item[open] summary::after {
-      content: "\2212";
-    }
-    .faq-item summary:hover { color: var(--accent); }
-    .faq-answer {
-      padding: 0 16px 14px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .plot-container {
-      background: hsl(210 3% 12%);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 6px;
-    }
-    .plot-container .plotly-graph-div { width: 100% !important; }
-    .plot-container .modebar { opacity: 0; transition: opacity 0.2s ease; }
-    .plot-container:hover .modebar { opacity: 1; }
-    .plot-container .modebar-btn { color: var(--muted) !important; }
-    .plot-container .modebar-btn:hover { color: var(--fg) !important; }
-    .plot-container .rangeslider-container { opacity: 0.5; }
-
-    /* ── Evolution Timeline ── */
-    .timeline {
-      position: relative;
-      padding: 8px 0 0 28px;
-    }
-    .timeline::before {
-      content: "";
-      position: absolute;
-      left: 7px;
-      top: 12px;
-      bottom: 12px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--border), var(--accent));
-      border-radius: 1px;
-    }
-    .tl-item {
-      position: relative;
-      padding: 0 0 28px 0;
-    }
-    .tl-item:last-child { padding-bottom: 0; }
-    .tl-item::before {
-      content: "";
-      position: absolute;
-      left: -25px;
-      top: 5px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-      border: 2px solid var(--bg-card);
-      z-index: 1;
-    }
-    .tl-item:last-child::before {
-      background: var(--accent);
-      box-shadow: 0 0 8px rgba(57, 211, 174, 0.4);
-    }
-    .tl-date {
-      font-size: 12px;
-      color: var(--accent);
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-bottom: 4px;
-    }
-    .tl-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--fg);
-      margin-bottom: 4px;
-    }
-    .tl-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    /* ── Footer ── */
-    .story-footer {
-      margin-top: 24px;
-      padding: 24px 0;
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-    .footer-note {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    .footer-updated {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
-      opacity: 0.6;
-    }
-    .footer-computed {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
-      opacity: 0.6;
-    }
-
-    /* ── Loading ── */
-    .loading-overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 200px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-in { animation: fadeUp 0.4s ease forwards; }
-
-    /* ── RWD ── */
-    @media (max-width: 768px) {
-      .site-header { padding: 0 16px; }
-      .page { padding: 20px 16px 48px; }
-      .card { padding: 24px 18px; }
-      .hero { padding: 36px 18px; }
-      .hero-title { font-size: 24px; }
-      .hero-subtitle { font-size: 14px; }
-      .hero-stats { gap: 24px; flex-wrap: wrap; }
-      .hero-stat-value { font-size: 22px; }
-      .fsm-diagram { flex-direction: column; align-items: stretch; }
-      .fsm-state { min-width: auto; }
-      .fsm-arrow { padding: 4px 0; }
-      .fsm-arrow::before { content: "\2193"; }
-      .chart-header { flex-direction: column; align-items: flex-start; }
-      .legend { flex-wrap: wrap; gap: 8px; }
-      .event-tabs { gap: 4px; }
-      .event-tab { padding: 5px 12px; font-size: 11px; }
-      .event-compare { grid-template-columns: 1fr; }
-      .event-summary-banner { flex-wrap: wrap; gap: 12px; }
-    }
-
-    @media (max-width: 480px) {
-      .hero-stats { flex-direction: column; gap: 16px; }
-      .comparison-table th, .comparison-table td {
-        padding: 8px 10px;
-        font-size: 12px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ultron 資金濾網說明｜CoinKarma</title>
+<meta name="description" content="Ultron 這次回撤的原因、新上線的資金濾網、歷史九段對照與常見問題。">
+<link rel="icon" href="/ultron-evolution/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Look of the existing coinkarma.co/ultron-evolution page (dark only): sticky top bar, a centred hero card, every section in its own card,
+   darker inner panels for charts and tables, tinted flow boxes, a teal timeline, FAQ as collapsed rows.
+   colour roles: grey = BTC, yellow = 原本的 Ultron, teal = 加上資金濾網 (brand accent), red = filter-on stretches */
+:root{
+  --page:hsl(210 4% 9.8%); --surface:hsl(210 2.7% 14.5%); --panel:hsl(210 3% 11%);
+  --ink:hsl(0 0% 98%); --ink2:hsl(240 5% 72%); --muted:hsl(240 5% 64.9%);
+  --grid:hsl(240 3.7% 20%); --axis:hsl(240 3.7% 32%); --border:hsl(240 3.7% 20%);
+  --accent:#39d3ae; --live:#f0b429; --rule:#39d3ae; --danger:#ee6058; --yellow:#f0b429;
+  --wash:rgba(238,96,88,.17); --note:rgba(240,180,41,.10); --pill:rgba(57,211,174,.12);
+  --bar:hsla(210,4%,9.8%,.95);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink2);font:14.5px/1.75 Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:884px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:24px}
+strong,b{color:var(--ink);font-weight:600}
+p{margin:10px 0}
+.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:8;background:var(--bar);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.top .in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;padding-left:max(24px, env(safe-area-inset-left, 0px));padding-right:max(24px, env(safe-area-inset-right, 0px))}
+.top .brand{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:.01em}
+.top .brand svg{display:block}
+.top a{font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:3px 12px}
+.top a:hover,.top a:focus-visible{color:var(--ink);border-color:var(--axis)}
+.hero{background:linear-gradient(160deg,hsl(210 4% 12%),hsl(210 4% 16%));border:1px solid var(--border);border-radius:8px;padding:56px 32px 44px;text-align:center}
+.badge{display:inline-block;margin:0 0 18px;padding:3px 12px;border-radius:999px;background:var(--pill);color:var(--accent);font-size:11.5px;font-weight:500;letter-spacing:.08em}
+h1{font-size:30px;line-height:1.35;margin:0 auto 16px;font-weight:700;color:var(--ink);max-width:24em}
+h1 span{display:inline-block}
+.lead{color:var(--muted);font-size:15px;line-height:1.75;margin:0 auto;max-width:38em}
+.lead + .lead{margin-top:8px}
+.pair{display:flex;justify-content:center;flex-wrap:wrap;gap:16px 64px;margin:34px 0 0}
+.stat{min-width:0;max-width:19em}
+.stat b{display:block;font-size:30px;line-height:1.2;font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.stat span{display:block;font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:32px;min-width:0}
+h2{font-size:20px;line-height:1.4;margin:0 0 14px;font-weight:600;color:var(--ink);text-wrap:balance}
+h3{font-size:15.5px;line-height:1.5;margin:26px 0 6px;font-weight:600;color:var(--ink)}
+.sec > h3:first-of-type{margin-top:4px}
+hr.split{border:0;border-top:1px solid var(--border);margin:26px 0 0}
+.small{font-size:12.5px;color:var(--muted);line-height:1.65}
+ol.num{list-style:none;margin:14px 0;padding:0;counter-reset:n}
+ol.num li{counter-increment:n;position:relative;padding:11px 0 11px 34px;border-bottom:1px solid var(--border);margin:0}
+ol.num li:last-child{border-bottom:0}
+ol.num li::before{content:counter(n);position:absolute;left:0;top:12px;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--pill);color:var(--accent);font-size:12px;font-weight:600}
+ul{margin:10px 0;padding-left:20px}
+li{margin:6px 0}
+ul li::marker{color:var(--accent)}
+.flow{display:flex;align-items:stretch;gap:10px;margin:16px 0 8px}
+.fbox{flex:1 1 0;min-width:0;border-radius:8px;padding:14px 14px 12px;border:1px solid;text-align:center}
+.fbox b{display:block;font-size:14.5px;font-weight:600}
+.fbox span{display:block;font-size:12.5px;line-height:1.6;margin-top:4px;color:var(--ink2)}
+.fbox.red{background:rgba(238,96,88,.10);border-color:rgba(238,96,88,.35)} .fbox.red b{color:var(--danger)}
+.fbox.yel{background:rgba(240,180,41,.10);border-color:rgba(240,180,41,.35)} .fbox.yel b{color:var(--yellow)}
+.fbox.grn{background:rgba(57,211,174,.10);border-color:rgba(57,211,174,.35)} .fbox.grn b{color:var(--accent)}
+.arr{align-self:center;color:var(--muted);font-style:normal;font-size:18px;flex:none}
+.callout{background:var(--note);border:1px solid rgba(240,180,41,.30);border-radius:8px;padding:14px 18px;margin:20px 0 0}
+.callout p{margin:4px 0}
+.callout b{color:var(--yellow)}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 16px 12px;margin:16px 0;min-width:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin:0 0 8px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.key{display:inline-block;width:18px;height:0;border-top:2px solid var(--muted)}
+.key.live{border-top-color:var(--live)} .key.rule{border-top-color:var(--rule)}
+.sw{display:inline-block;width:14px;height:12px;border-radius:3px;background:var(--wash)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;touch-action:pan-y}
+.tick{font-size:11.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.endv{font-size:12px;fill:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.band{font-size:11.5px;fill:var(--ink2);font-variant-numeric:tabular-nums}
+#tip{position:fixed;z-index:9;pointer-events:none;background:var(--surface);border:1px solid var(--axis);border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:8px 10px;font-size:12.5px;line-height:1.55;min-width:150px;color:var(--ink2)}
+#tip .h{color:var(--muted);margin-bottom:3px}
+#tip .r{display:flex;gap:12px;justify-content:space-between;align-items:center}
+#tip .r span{display:inline-flex;align-items:center;gap:6px}
+#tip .r b{font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:500px;font-variant-numeric:tabular-nums}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:right;padding:6px 8px 8px;border-bottom:1px solid var(--axis);vertical-align:bottom;line-height:1.45}
+th:first-child,td:first-child{text-align:left;padding-left:2px}
+th span{display:inline-flex;align-items:center;gap:6px}
+td{padding:10px 8px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top;line-height:1.45}
+tr:last-child td{border-bottom:0}
+td b{display:block;font-size:14.5px;font-weight:600}
+td i{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+tr.now td{background:var(--note)}
+.evo{list-style:none;margin:18px 0 0;padding:0 0 0 22px;border-left:2px solid var(--accent)}
+.evo li{position:relative;margin:0;padding:0 0 26px 6px}
+.evo li:last-child{padding-bottom:2px}
+.evo li::before{content:"";position:absolute;left:-29px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--surface)}
+.evo li.now::before{background:var(--accent);box-shadow:0 0 0 3px rgba(57,211,174,.25)}
+.evo em{display:block;font-style:normal;font-size:12.5px;color:var(--accent)}
+.evo b{display:block;font-size:14.5px;line-height:1.6}
+.evo span{display:block;font-size:13.5px;color:var(--muted);line-height:1.7}
+.faq{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.qa{border:1px solid var(--border);border-radius:6px;background:var(--panel)}
+.qa summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;font-size:14.5px;font-weight:600;color:var(--ink)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";flex:none;font-size:18px;font-weight:400;color:var(--muted);line-height:1}
+.qa[open] summary::after{content:"−"}
+.qa summary:hover::after{color:var(--ink)}
+.qa summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.qa .ans{padding:0 16px 14px;border-top:1px solid var(--border)}
+.qa .ans p,.qa .ans li{font-size:14px}
+footer{border-top:1px solid var(--border);padding-top:22px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){
+  h1{font-size:23px}
+  .hero{padding:36px 18px 30px}
+  .sec{padding:22px 18px}
+  .pair{gap:18px}
+  .stat b{font-size:26px}
+  .flow{flex-direction:column}
+  .arr{transform:rotate(90deg)}
+  table{min-width:0}
+  th,td{padding-left:4px;padding-right:4px}
+  th{font-size:11.5px}
+  th span{flex-wrap:wrap;justify-content:flex-end}
+  td b{font-size:13.5px}
+  td i{font-size:11px}
+  td:first-child b{font-size:12.5px}
+  td:first-child{width:25%}
+  td i{white-space:nowrap;font-size:10.5px}
+  th,td{padding-left:3px;padding-right:3px}
+  .lg{display:none}
+  .band{font-size:10.5px}
+  .panel{padding:10px 6px 8px}
+}
+</style>
 </head>
 <body>
-
-  <header class="site-header">
-    <a class="logo" href="/ultron-evolution/">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-      </svg>
-      <span data-i18n="site-title">CoinKarma Ultron</span>
-    </a>
-    <div class="lang-switcher">
-      <button class="lang-btn" data-lang="en">EN</button>
-      <button class="lang-btn active" data-lang="zh-TW">繁</button>
-      <button class="lang-btn" data-lang="zh-CN">简</button>
-    </div>
-  </header>
-
-  <div class="page">
-
-    <!-- ====== HERO ====== -->
-    <section class="hero card animate-in">
-      <div class="hero-badge" data-i18n="hero-badge">Post-Crisis Response</div>
-      <h1 class="hero-title" data-i18n="hero-title">Turning a -5.65&sigma; Event Into Stronger Protection</h1>
-      <p class="hero-subtitle" data-i18n="hero-subtitle" data-i18n-html>In February 2026, Bitcoin suffered its worst drawdown since the FTX bankruptcy &mdash; a <strong>-5.65&sigma; extreme event</strong> that has only occurred 4 times since 2010. Ultron drew down ~25%, with our team&rsquo;s own capital bearing the same losses alongside subscribers. We spent extensive time studying past crash patterns and indicator desensitization, and developed new long-side protection layers. Backtests show these would have <strong>nearly halved</strong> the maximum drawdown.</p>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="hero-roi-delta">--</span>
-          <span class="hero-stat-label" data-i18n="hero-stat-roi-delta" id="hero-roi-delta-label">ROI Improvement</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="hero-mdd-delta">--</span>
-          <span class="hero-stat-label" data-i18n="hero-stat-mdd-delta" id="hero-mdd-delta-label">MDD Improvement</span>
-        </div>
-      </div>
-      <p class="hero-stats-note" data-i18n="hero-stats-note" style="margin-top:10px;font-size:11px;opacity:0.7;text-align:center;">Improvement from adding Long Filter (vs Short Filter only)</p>
-    </section>
-
-    <!-- ====== INTRO ====== -->
-    <section class="card animate-in">
-      <p class="section-body" data-i18n="intro-body" data-i18n-html>We studied past major BTC crashes in depth and discovered that before each event, the Binance BTCUSDT perpetual contract&rsquo;s <strong>Long-Short Ratio (LSUR)</strong> and <strong>Open Interest</strong> consistently showed detectable anomalies. We had already developed the <strong>Short Filter</strong> in 2025 Q4. After this event, we further developed the <strong>Long Filter</strong>, completing the risk protection framework. Below is an introduction to the Filter mechanisms.</p>
-    </section>
-
-    <!-- ====== SHORT FILTER ====== -->
-    <section class="card animate-in">
-      <h2 class="section-title" data-i18n="sf-title">Short Filter</h2>
-      <p class="section-body" data-i18n="sf-body" data-i18n-html>Monitors <strong>Cumberland OTC</strong> transfer activity on-chain. When large transfers exceed sell-side liquidity thresholds, short entries are blocked to avoid false signals during strong uptrends.<br><a href="https://docs.coinkarma.co/indicators-guide/cumberland-usdt-distribution" target="_blank" style="color:var(--accent);text-decoration:underline;">CoinKarma Indicator Review &amp; Guide</a></p>
-    </section>
-
-    <!-- ====== LONG FILTER ====== -->
-    <section class="card animate-in">
-      <h2 class="section-title" data-i18n="lf-title">Long Filter: Multi-Layer Protection</h2>
-
-      <!-- Layer 1: MA Filter -->
-      <div>
-        <h3 class="subsection-title" data-i18n="lf-ma-title">Layer 1 &mdash; Moving Average Filter</h3>
-        <p class="section-body" data-i18n="lf-ma-body" data-i18n-html>Gradually reduces long exposure as price falls below key moving averages, preventing catastrophic losses while retaining partial upside. With 3&times; leverage, a 50% coefficient caps exposure at 1.5&times;, and 40% caps it at 1.2&times;&mdash;effectively spot-level exposure&mdash;dramatically reducing liquidation risk.</p>
-        <div class="ma-tiers">
-          <div class="ma-tier ma-tier-normal" data-i18n="lf-tier-normal">Normal: 100% exposure</div>
-          <div class="ma-tier ma-tier-120" data-i18n="lf-tier-120">Below MA120: 50%</div>
-          <div class="ma-tier ma-tier-180" data-i18n="lf-tier-180">Below MA180 + Declining: 40%</div>
-        </div>
-      </div>
-
-      <!-- Layer 2: Crash Stop-Loss -->
-      <div class="subsection">
-        <h3 class="subsection-title" data-i18n="lf-crash-title">Layer 2 &mdash; Crash Detection &amp; Cooldown</h3>
-        <p class="section-body" data-i18n="lf-crash-body" data-i18n-html>Detects crash conditions when multiple signals fire simultaneously: <strong>24h price drop &ge; 5%</strong>, combined with abnormally elevated <strong>LSUR z-score</strong> and <strong>Open Interest z-score</strong>. When triggered, all positions are <strong>immediately closed</strong>.</p>
-
-        <!-- FSM Diagram -->
-        <div class="fsm-diagram">
-          <div class="fsm-state fsm-normal" data-i18n="fsm-normal">Normal Trading</div>
-          <div class="fsm-arrow"><span data-i18n="fsm-trigger">Crash Detected</span></div>
-          <div class="fsm-state fsm-cooldown" data-i18n="fsm-cooldown" data-i18n-html>Mandatory Cooldown<br>72 hours</div>
-          <div class="fsm-arrow"><span data-i18n="fsm-cooldown-end">Expires</span></div>
-          <div class="fsm-state fsm-monitor" data-i18n="fsm-monitor" data-i18n-html>Monitoring Phase<br>&le; 120 hours</div>
-          <div class="fsm-arrow"><span data-i18n="fsm-reentry">Conditions Met</span></div>
-          <div class="fsm-state fsm-normal" data-i18n="fsm-resume">Resume Trading</div>
-        </div>
-
-        <!-- Re-entry conditions -->
-        <p class="section-body" style="margin-bottom: 8px;" data-i18n="lf-reentry-title" data-i18n-html>After the 72-hour mandatory cooldown, the system enters a <strong>monitoring phase</strong>. Trading resumes when <strong>any one</strong> of the following conditions is met:</p>
-        <ol class="reentry-list">
-          <li data-num="1" data-i18n="lf-reentry-vol" data-i18n-html><strong>Volatility Normalization</strong> &mdash; Current 24h realized volatility drops below 70% of the volatility at the time of the crash trigger.</li>
-          <li data-num="2" data-i18n="lf-reentry-spike" data-i18n-html><strong>Price Reversal Signal</strong> &mdash; Previous day's intraday range exceeds 10%, indicating a potential reversal.</li>
-          <li data-num="3" data-i18n="lf-reentry-timeout" data-i18n-html><strong>Time Expiry</strong> &mdash; 120-hour monitoring window expires without any condition being met, and the system resumes cautiously.</li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ====== COMPARISON TABLE ====== -->
-    <section class="card animate-in" id="section-comparison">
-      <h2 class="section-title" data-i18n="comp-title">Results Comparison</h2>
-      <p class="section-body" data-i18n="comp-subtitle" data-i18n-html>BTC backtest from <strong>August 2022</strong> to present, starting with <strong>$100,000 USD</strong>. 3x leverage, MLD (Multi-Layer Dynamic) rolling thresholds.</p>
-      <div class="table-wrap">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th data-i18n="comp-metric">Metric</th>
-              <th data-i18n="comp-no-filter">No Filters</th>
-              <th data-i18n="comp-short-only">Short Filter Only</th>
-              <th class="col-highlight-head" data-i18n="comp-full">Full Protection</th>
-            </tr>
-          </thead>
-          <tbody id="comparison-tbody">
-            <tr><td colspan="4" class="loading-overlay" data-i18n="loading">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ====== EQUITY CHART ====== -->
-    <section class="chart-section card animate-in">
-      <div class="chart-header">
-        <div>
-          <h2 data-i18n="equity-title">Equity Curve Comparison</h2>
-          <p data-i18n="equity-desc">Three scenarios overlaid against BTC price.</p>
-        </div>
-        <div class="scale-toggle" id="scale-toggle">
-          <button class="scale-btn active" data-scale="log">Log</button>
-          <button class="scale-btn" data-scale="linear">Linear</button>
-        </div>
-      </div>
-      <div class="plot-container"><div id="equity-plot"></div></div>
-    </section>
-
-    <!-- ====== DRAWDOWN CHART ====== -->
-    <section class="chart-section card animate-in">
-      <div class="chart-header">
-        <div>
-          <h2 data-i18n="dd-title">Drawdown Comparison</h2>
-          <p data-i18n="dd-desc">How each configuration weathered the worst periods.</p>
-        </div>
-      </div>
-      <div class="plot-container"><div id="drawdown-plot"></div></div>
-    </section>
-
-    <!-- ====== EVENT DEEP-DIVE ====== -->
-    <section class="card animate-in" id="section-events">
-      <h2 class="section-title" data-i18n="events-title">Event Deep-Dive</h2>
-      <p class="section-body" data-i18n="events-desc">How each configuration handled major market crashes. The table below compares the most impacted position during each event.</p>
-      <div class="event-tabs" id="event-tabs"></div>
-      <div class="event-panels" id="event-panels">
-        <div class="loading-overlay" data-i18n="loading">Loading...</div>
-      </div>
-    </section>
-
-    <!-- ====== EVOLUTION TIMELINE ====== -->
-    <section class="card animate-in" id="section-evolution">
-      <h2 class="section-title" data-i18n="evo-title">Always Evolving</h2>
-      <p class="section-body" data-i18n="evo-desc">Ultron is not a static strategy. Each market event teaches us something new, and we continuously refine our risk management framework.</p>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-date" data-i18n="evo-date-1">Feb 2025</div>
-          <div class="tl-title" data-i18n="evo-title-1">Market Pulse Index Integration</div>
-          <div class="tl-desc" data-i18n="evo-desc-1">Migrated from Overall LIQ batch entry to Market Pulse Index (MPI) dynamic position sizing, enabling more precise market timing.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date" data-i18n="evo-date-2">Sep 2025</div>
-          <div class="tl-title" data-i18n="evo-title-2">Short Filter</div>
-          <div class="tl-desc" data-i18n="evo-desc-2">Developed Cumberland OTC monitoring to avoid premature short entries during sustained uptrends.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date" data-i18n="evo-date-3">Oct 2025</div>
-          <div class="tl-title" data-i18n="evo-title-3">Dynamic Thresholds (MLD)</div>
-          <div class="tl-desc" data-i18n="evo-desc-3">Introduced Multi-Layer Dynamic thresholds that adapt entry and exit levels based on current market conditions.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date" data-i18n="evo-date-4">Feb 2026</div>
-          <div class="tl-title" data-i18n="evo-title-4">Long Filter</div>
-          <div class="tl-desc" data-i18n="evo-desc-4">Market stress analysis revealed additional protection opportunities. Developed the MA Filter and Crash Detection system with mandatory cooldown periods.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date" data-i18n="evo-date-5">Q2 2026</div>
-          <div class="tl-title" data-i18n="evo-title-5">Next: Macro Regime Detection</div>
-          <div class="tl-desc" data-i18n="evo-desc-5">Researching cross-asset macro correlations and additional on-chain anomaly patterns to further expand the protection framework.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====== FAQ ====== -->
-    <section class="card animate-in" id="section-faq">
-      <h2 class="section-title" data-i18n="faq-title">Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <details class="faq-item">
-          <summary data-i18n="faq-q1">Why does the backtest differ from live performance?</summary>
-          <div class="faq-answer" data-i18n="faq-a1" data-i18n-html>Ultron has been live-trading since <strong>May 2024</strong>, from day one of CoinKarma&rsquo;s launch. The strategy has gone through multiple iterations since then. This page shows backtests using the <strong>latest MLD + Filter version</strong>, which incorporates all historical improvements. Since the strategy is continuously evolving, earlier live results naturally differ from the current backtest.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q2">Why wasn&rsquo;t the Long Filter in place before?</summary>
-          <div class="faq-answer" data-i18n="faq-a2">The Short Filter was already deployed and running in 2025 Q4. Developing the Long Filter required sufficient crash samples for modeling. The -5.65&sigma; event in January 2026 provided the critical data patterns that enabled us to build and validate this protection layer. Additionally, after November 2025, to avoid the impact of fat-tail events in a bear market, the team proactively halved long exposure, which already reduced the original ~50% drawdown to ~25%. During the same period, BTC spot retraced over 50% from its highs, while Ultron with 3x leverage only drew down ~25% &mdash; already significantly outperforming spot holders &mdash; yet we continue to strengthen our protection mechanisms.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q3">Is there a risk of overfitting in the newly added Long Filter?</summary>
-          <div class="faq-answer" data-i18n="faq-a3">The Long Filter has two layers. Layer 1 (MA Filter) is a trend-based position management mechanism: when price falls below key moving averages, the system automatically reduces long exposure rather than trying to predict specific crash events. This logic uses few parameters and doesn&rsquo;t depend on specific patterns, making overfitting risk very low. In two of the five major backtest events, the Layer 2 crash stop-loss wasn&rsquo;t even triggered &mdash; the MA Filter&rsquo;s exposure reduction alone was sufficient to control losses. Layer 2&rsquo;s crash detection does rely on a smaller sample set, but its role is supplementary insurance, not the primary line of defense.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q4">Does the Filter reduce returns in bull markets?</summary>
-          <div class="faq-answer" data-i18n="faq-a4" data-i18n-html>Quite the opposite. Backtests show that adding Filters <strong>significantly increased ROI</strong>. The reason: avoiding deep drawdowns means the portfolio doesn&rsquo;t have to climb out of a deep hole, and compounding effects accelerate equity growth.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q5">Is the backtest period cherry-picked?</summary>
-          <div class="faq-answer" data-i18n="faq-a5" data-i18n-html>No. The backtest covers <strong>August 2022 to present</strong>, spanning a full bull-bear cycle and 5 major crisis events: FTX bankruptcy, BOJ rate hike, tariff escalation, November 2025 sell-off, and the January 2026 crash.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q6">Does the team trade with their own capital?</summary>
-          <div class="faq-answer" data-i18n="faq-a6" data-i18n-html>Yes. Since CoinKarma launched in <strong>May 2024</strong>, the team&rsquo;s own capital has been trading the exact same strategy alongside subscribers, sharing the same gains and losses.</div>
-        </details>
-        <details class="faq-item">
-          <summary data-i18n="faq-q7">Why does the backtest start from August 2022? Can&rsquo;t it go further back?</summary>
-          <div class="faq-answer" data-i18n="faq-a7" data-i18n-html>The earliest available data from our data sources begins on <strong>August 1, 2022</strong>. This period already covers multiple distinct market phases &mdash; including bear markets, recoveries, bull runs, and several major crash events &mdash; providing a comprehensive validation of the strategy&rsquo;s performance.</div>
-        </details>
-      </div>
-    </section>
-
-    <!-- ====== FOOTER ====== -->
-    <footer class="story-footer">
-      <p class="footer-note" data-i18n="footer-note">Data range: 2022-08-01 to present. Past performance does not guarantee future results. All backtests use 3x leverage, MLD (Multi-Layer Dynamic) rolling thresholds, 0.05% commission, and slippage assumptions.</p>
-      <p class="footer-updated" data-i18n="footer-updated">Last updated: 2026-02-13</p>
-      <p class="footer-computed" id="footer-computed"></p>
-    </footer>
-
+<header class="top"><div class="in"><span class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>CoinKarma Ultron</span><a href="/ultron-signal">Ultron 信號頁</a></div></header>
+<main>
+<section class="hero">
+<p class="badge">策略升級報告</p>
+<h1><span>從減碼到換邊：</span><span>Ultron 面對單邊下跌的新做法</span></h1>
+<p class="lead">2026 年的比特幣，走出了兩個 2011 年有紀錄以來首見的型態：一年內兩次週線六連跌，以及大幅突破 200 週均線後不到三個月又跌回線下。這種跌了不彈的單邊行情，正是波段策略最難應付的。Ultron 的淨值在這一波自 3.5 回落至 2.5。</p>
+<p class="lead">面對這次回撤，我們改進了 Ultron 做多的濾網，並於今天（11 月 18 日）上線。</p>
+<div class="pair">
+  <div class="stat"><b>9 / 9</b><span>歷史上對應的九段下跌，加入濾網後每一段的結果都優於原本的 Ultron</span></div>
+  <div class="stat"><b>−28% → −11%</b><span>九段之中，途中最深回落的改善</span></div>
+</div>
+</section>
+<section class="sec">
+<h2>Ultron 在什麼行情會吃虧</h2>
+<p>Ultron 是做波段的策略，以 MPI 判讀市場冷熱：市場冷卻時分批買進，過熱時賣出。行情有來有回時，每一次反彈都是調整部位、壓低成本的機會。</p>
+<p>它的弱點是單邊下跌。當價格失去彈性、跌了不彈，指標會長時間停在低檔，Ultron 持續加碼，卻沒有波段可以把部位減下來，回撤就容易擴大。這一波正是這種行情。</p>
+</section>
+<section class="sec">
+<h2>我們找到的共同特徵</h2>
+<p>把 2022 年以來的下跌逐段攤開，Ultron 最吃虧的那幾段，都是兩件事同時發生：</p>
+<ol class="num">
+  <li><b>價格跌破 50 日均線。</b>趨勢已經轉弱。</li>
+  <li><b>場內資金明顯減少。</b>近 30 天穩定幣總量明顯縮水，或比特幣現貨 ETF 近 30 天持續淨流出。</li>
+</ol>
+<p>趨勢轉弱，同時幣圈資金正在流出。這種下跌最難出現像樣的反彈。資金濾網每天檢查這兩件事，同時成立就啟動。</p>
+<div class="panel">
+  <div class="legend"><span><i class="key"></i>比特幣價格</span><span><i class="sw"></i>濾網成立</span></div>
+  <div class="chart" id="c-price" role="img" aria-label="2022 年 8 月以來的比特幣價格，標出濾網成立的九段時期"></div>
+  <p class="small">紅色是濾網成立的時期，上方的數字是成立之後比特幣途中最深的跌幅。2022 年 8 月以來共九段，包含眼前這一波。其中八段在濾網成立後，比特幣又下跌超過一成；四段超過兩成。美國現貨 ETF 於 2024 年 1 月上市，在那之前只看穩定幣。</p>
+</div>
+</section>
+<section class="sec">
+<h2>防護機制</h2>
+<h3>既有的第一層：均線減碼</h3>
+<p>長期均線轉弱時，自動降低 Ultron 的多單曝險。這一波它在 11 月 8 日啟動，大幅降低了回撤：啟動之後那一段，Ultron 的跌幅少了一半。</p>
+<p>減碼能控制損失，但部位仍然在場內。面對真正的單邊下跌，需要一層會讓 Ultron 離場、並且換邊的機制。</p>
+<hr class="split">
+<h3>新的一層：資金濾網（今天上線）</h3>
+<div class="flow">
+  <div class="fbox red"><b>平多單</b><span>多單全部平倉，不再加碼。</span></div>
+  <i class="arr" aria-hidden="true">→</i>
+  <div class="fbox yel"><b>開空單</b><span>不看 MPI，直接持有 1 倍空單。</span></div>
+  <i class="arr" aria-hidden="true">→</i>
+  <div class="fbox grn"><b>等解除</b><span>價格站回均線，或資金重新流入，就回到原本的波段操作。</span></div>
+</div>
+<p class="small">空單的平倉條件和其他細節，放在下方的常見問題。</p>
+</section>
+<section class="sec">
+<h2>結果對比</h2>
+<p>把資金濾網套回歷史上的九段，和原本的 Ultron 逐段比較。</p>
+<div class="panel">
+  <div class="scroll">
+  <table>
+    <thead><tr>
+      <th>濾網成立的時期</th>
+      <th><span><i class="dot" style="background:var(--muted)"></i>比特幣</span></th>
+      <th><span><i class="dot" style="background:var(--live)"></i>原本的 Ultron</span></th>
+      <th><span><i class="dot" style="background:var(--rule)"></i>加上資金濾網</span></th>
+    </tr></thead>
+    <tbody id="waves"></tbody>
+  </table>
   </div>
+  <p class="small">每一段都從濾網成立當天起算。大字是整段的結果，小字是途中最深的回落，Ultron 兩欄都含槓桿。最後一列是眼前這一波，算到 11 月 17 日。</p>
+</div>
+<p>九段全數改善。原本的 Ultron 有六段虧損，途中最深回落 28%；加上濾網後只有一段小虧，途中最深回落 11%。</p>
+<p class="small">兩欄都是回測，不是當時帳戶的實際表現。「原本的 Ultron」是今天上線前的版本，其中幾層保護是今年才加上的，所以 2025 年 11 月、2026 年 1 月、2026 年 5 月這三段在表中有獲利，和當時的實際表現不同。</p>
+</section>
+<section class="sec">
+<h2>眼前這一波的對比</h2>
+<p>自 10 月 2 日的淨值高點起算，到 11 月 17 日。三條線都以高點為 100。</p>
+<div class="panel">
+  <div class="legend"><span><i class="key"></i>比特幣</span><span><i class="key live"></i>原本的 Ultron</span><span><i class="key rule"></i>加上資金濾網</span><span><i class="sw"></i>濾網成立</span></div>
+  <div class="chart" id="c-wave" role="img" aria-label="10 月 2 日到 11 月 17 日：比特幣從 100 到 74，原本的 Ultron 從 100 到 70，加上資金濾網從 100 到 123"></div>
+</div>
+<p>10 月 22 日以前兩條線相同，都隨行情回落 6%。10 月 23 日濾網成立，加上濾網的版本平掉多單、改持空單，之後比特幣再跌兩成。到 11 月 17 日，原本的 Ultron 是 −30%，與實際淨值的跌幅相當；加上資金濾網的回測結果是 +23%。</p>
 
-  <script src="/ultron-evolution/app_prod.js"></script>
+<div class="callout">
+  <p><b>資金濾網從下一次成立開始生效，眼前這一波不適用。</b></p>
+  <p>比特幣已經下跌 26%，這時才平多單、追空單，等於在跌深的位置換邊。所以這一波 Ultron 照原本的方式運作，均線減碼持續作用。</p>
+  <p>等這次的濾網解除後，下一次成立就會動作。</p>
+</div>
+</section>
+<section class="sec">
+<h2>策略進化歷程</h2>
+<p>Ultron 不是一個靜態的策略。每一次市場事件都是學習的機會，防線是一層一層疊上去的。</p>
+<ol class="evo">
+  <li><em>2025 年 2 月</em><b>Market Pulse Index 整合</b><span>由流動性指標分批進場，改為以 MPI 動態調整倉位。</span></li>
+  <li><em>2025 年 9 月</em><b>空單過濾器</b><span>避免在單邊上漲時過早做空。</span></li>
+  <li><em>2025 年 10 月</em><b>動態閾值</b><span>依當下行情自動調整多空的進出場條件。</span></li>
+  <li><em>2026 年 2 月</em><b>均線減碼與崩盤偵測</b><span>極端事件之後加入，價格跌破長期均線時降低多單曝險。</span></li>
+  <li><em>2026 年 9 月</em><b>頂部辨識防守</b><span>以 ILI 辨識頂部，頂部出現後進入防守。</span></li>
+  <li class="now"><em>2026 年 11 月</em><b>資金濾網與主動做空</b><span>不需要先辨識頂部，直接看資金是否離場；成立時平多單並轉空。</span></li>
+</ol>
+</section>
+<section class="sec">
+<h2>常見問題</h2>
+<div class="faq">
+  <details class="qa">
+    <summary>之前不是已經做過濾網，為什麼還是有這麼大的回撤？</summary>
+    <div class="ans">
+  <p>因為這一波是比特幣十五年來沒有出現過的走法。</p>
+  <p>既有的第一層防線在這一波仍然有作用：均線減碼在下跌途中啟動，把槓桿部位直接砍到一倍左右，大幅降低了回撤。</p>
+  <p>但第二層的 OI、LSUR 濾網，條件來不及成立就已經開始崩盤。這個濾網只會在價格跌破 120 日均線超過 5 天後才啟動。</p>
+  <p>這個濾網的假設是，比特幣由牛轉熊通常是一段較長的過程：價格先跌破重要均線、在線下停留一段時間之後才開始崩盤。但這次並不是這種走法。</p>
+  <p>第三層濾網是 ILI（機構流動性衰退）。它認定的頂部是滾動 365 天的高點，價格要接近這個高點才會有訊號。這次滾動 365 天的高點還在 10 萬以上，8.7 萬的高點不會啟動它。</p>
+  <p>這次是比特幣史上第一次，大幅突破 200 週均線之後不到三個月又跌回線下。下跌剛開始時，價格還在 120 日均線上方 20% 左右；從確定跌破 120 日均線（11 月 10 日）開始，只花了 4 天就直接跌回 8 月的起漲點，四天跌了一萬多點。第二層濾網的確認期還沒走完，跌勢就已經完成。</p>
+  <p>簡單來說，「跌得太快」和「漲得不夠多就開始跌」，是這次第二層、第三層濾網沒有生效的原因。</p>
+  <p>這次新上線的資金濾網，不需要等確認期，也不仰賴 ILI 猜頂，直接看比特幣趨勢轉弱時資金是否離場。從邏輯上更合理，也更靈敏，也涵蓋了今年三次讓 Ultron 出現重大回撤的單邊下跌。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>2025 年底才開始跟單，一年下來幾乎沒賺，這個策略還有效嗎？</summary>
+    <div class="ans">
+  <p>2026 年是 Ultron 比較辛苦的一年。比特幣在這一年出現了三次單邊下跌，分別在 1 到 2 月、5 到 7 月、10 到 11 月，每一次都讓淨值明顯回落。2025 年底開始跟單的會員，體感會是很難賺到錢。</p>
+  <p>但把每一次淨值回到高點時的比特幣價格攤開來看，是另一個畫面：</p>
+  <ul>
+    <li>2026 年 1 月，淨值 3.16，比特幣約 8.9 萬。</li>
+    <li>2026 年 5 月，淨值回到 3.14，比特幣約 7.8 萬。</li>
+    <li>2026 年 9 月，淨值突破前高到 3.25，比特幣約 8.1 萬。</li>
+    <li>2026 年 10 月，淨值來到 3.45，比特幣約 8.5 萬。</li>
+  </ul>
+  <p>比特幣一路走低，Ultron 回到高點所需要的價格卻沒有跟著墊高。5 月時比特幣比 1 月低了一萬多，淨值回到同一個水準；9 月創新高時，比特幣仍然比 1 月低。前兩次單邊下跌之後，Ultron 都靠波段把淨值做了回來，不需要等比特幣漲回原本的價格。</p>
+  <p>每一次遇到新的行情，我們都會持續更新策略。這次更新的資金濾網，邏輯上直接看幣圈資金的進出，反應速度上不需要等確認期，兩方面都比過去的做法更好。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>Ultron 是一個只會做多、仰賴比特幣價格的策略嗎？</summary>
+    <div class="ans">
+  <p>Ultron 是多空都做的策略，但整體上比較傾向做多，只有各方面指標都非常過熱時才會做空。到目前為止的 86 次部位裡，有 20 次是空單。</p>
+  <p>這次的濾網補上之後，在下跌尾部風險急劇上升的時候會開出空單，相當於多了一個右側開空的機制。所以未來的 Ultron 會是一個多空更平衡的策略。</p>
+  <p>提高空單比例也和今年的行情有關。比特幣一年內出現兩次週線六連跌，是 2011 年有紀錄以來第一次，下跌的走法已經和過去不同。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>為什麼新濾網不直接套用在這一波？</summary>
+    <div class="ans">
+  <p>濾網的優勢來自及早換邊。這一波的條件在 10 月 23 日就已成立，現在比特幣已下跌 26%，此時才平掉所有多單、反手做空，承擔的是反彈的風險，拿不到及早離場的好處。所以規則設計為自下一次成立起生效。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>資金濾網有沒有回測過度擬合的風險？</summary>
+    <div class="ans">
+  <p>濾網只看兩類條件：價格趨勢與資金流向。它判斷的是市場有沒有資金承接，並不針對任何單一事件。九段結果方向一致，我們也另外做了獨立重算，數字相符。但回測終究是回測，這些規則是看著同一段歷史設計的，未來的實際表現會比回測保守。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>濾網期間做空，什麼時候會平倉？</summary>
+    <div class="ans">
+  <p>濾網期間的空單不看 MPI，有獨立的平倉條件，任一項成立就平倉：</p>
+  <ul>
+    <li>Overall LIQ（10% 深度）的 4 小時平均超過 5,000 BTC，之後有小時收盤站上前 4 小時的高點。代表掛單簿上的買盤回來了，價格也開始反應。</li>
+    <li>價格自這一段的最低收盤反彈 8%。</li>
+    <li>濾網解除。</li>
+  </ul>
+  <p>空單在場的期間，Ultron 不會做多參與反彈。從回測來看，這類空單虧的時候都是小虧，賺的時候是一大段：2022 年 8 月以來共 15 筆，4 筆虧損，最大一筆 −2.1%；11 筆獲利，平均 +9.5%。</p>
+  <p>空單平倉之後，若價格連續幾天不再破底，Ultron 會提早恢復做多，倉位先減半。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>資金濾網擋得住所有回撤嗎？</summary>
+    <div class="ans">
+  <p>不是。它處理的是資金退潮型的下跌。價格仍在均線之上、資金仍在流入時出現的急跌，不在它的守備範圍。那是我們已經開始的下一個研究題目。</p>
+  <p>例如 2024 年 8 月 5 日，日本央行引發的那種急跌，資金濾網不會啟動，因為那不是資金面能處理的行情。這類急跌交給第一層：均線減碼直接把多單倉位砍半。以現在的規則回測，那一次減碼在 8 月初就已經啟動。</p>
+    </div>
+  </details>
+  <details class="qa">
+    <summary>我需要做什麼？</summary>
+    <div class="ans">
+  <p>不需要。無論是直接跟單 Ultron，或是透過 Zeus，濾網都會自動執行。Zeus 裡的 Ultron 部位跟隨的是同一個 Ultron。</p>
+    </div>
+  </details>
+</div>
+</section>
+<footer>
+本頁的報酬與回落數字，均為將規則套回歷史資料的回測結果，並非帳戶實際績效。這些規則是參照同一段歷史行情設計的，回測結果會優於未來的實際表現。資料統計至 2026 年 11 月 17 日 09:00 UTC；週線統計採用 Bitstamp 自 2011 年 8 月以來的資料，計算至 2026 年 11 月 15 日。過去績效不代表未來表現。
+</footer>
+</main>
+<div id="tip" hidden></div>
+
+<script id="price" type="application/json">{"t0":"2022-08-01","close":[23268,22988,22818,22623,23312,22954,23174,23810,23150,23954,23934,24404,24441,24305,24095,23855,23343,23191,20834,21140,21516,21400,21529,21368,21559,20241,20038,19556,20286,19812,20050,20131,19952,19832,20000,19797,18791,19293,19320,21360,21648,21827,22396,20174,20227,19702,19803,20114,19416,19537,18875,18461,19402,19290,18920,18807,19228,19079,19413,19592,19423,19311,19057,19629,20338,20158,19961,19530,19418,19439,19132,19060,19156,19375,19177,19069,19263,19550,19327,19124,19042,19164,19204,19570,19330,20080,20772,20295,20592,20810,20627,20491,20484,20152,20208,21149,21299,20906,20591,18547,15923,17601,17070,16812,16330,16619,16901,16663,16693,16700,16701,16280,15781,16227,16603,16599,16522,16459,16429,16213,16443,17164,16977,17093,16885,17106,16966,17089,16837,17224,17129,17127,17085,17210,17775,17803,17356,16632,16777,16738,16439,16896,16825,16821,16778,16836,16832,16919,16706,16547,16633,16607,16542,16617,16673,16675,16850,16832,16951,16944,17128,17178,17441,17943,18847,19930,20955,20872,21186,21135,20677,21072,22667,22784,22708,22916,22633,23061,23010,23074,23023,23742,22826,23125,23733,23489,23432,23327,22933,22763,23240,22963,21796,21625,21863,21784,21774,22200,24324,23518,24570,24632,24272,24842,24452,24182,23940,23185,23157,23555,23492,23142,23629,23465,22354,22347,22430,22410,22198,21705,20362,20151,20456,21997,24113,24670,24286,24999,27395,26907,27973,27717,28105,27251,28295,27454,27463,27968,27125,27261,28349,28029,28465,28453,28172,27800,28165,28170,28034,27906,27938,28324,29637,30200,29888,30374,30467,30295,30305,29430,30380,28797,28244,27263,27817,27591,27511,28301,28415,29473,29312,29230,29233,28068,28670,29026,28838,29506,28848,28430,27669,27628,27599,26969,26795,26775,26918,27162,27034,27406,26821,26880,27102,26748,26849,27220,26329,26474,26706,26854,28065,27736,27694,27210,26818,27243,27069,27115,25728,27230,26339,26499,26478,25841,25926,25905,25934,25129,25598,26345,26517,26340,26844,28308,29994,29885,30688,30527,30463,30268,30692,30077,30447,30472,30586,30617,31156,30767,30505,29895,30345,30285,30161,30412,30622,30380,31454,30312,30290,30232,30138,29859,29909,29800,29902,29794,30084,29176,29229,29352,29223,29314,29353,29281,29232,29706,29186,29194,29114,29072,29088,29211,29770,29582,29456,29426,29430,29304,29431,29200,28731,26623,26054,26100,26190,26127,26056,26433,26180,26060,26017,26102,26120,27716,27300,25941,25805,25870,25971,25826,25792,25760,26255,25910,25902,25842,25163,25840,26222,26523,26600,26560,26528,26763,27210,27125,26568,26580,26576,26248,26305,26222,26373,27021,26907,26963,27993,27495,27426,27779,27410,27931,27957,27917,27590,27390,26876,26760,26862,26852,27154,28501,28396,28320,28714,29669,29910,29992,33070,33923,34496,34152,33892,34081,34526,34475,34640,35421,34942,34717,35062,35012,35046,35399,35625,36701,37302,37130,37064,36463,35551,37858,36164,36614,36568,37360,37449,35742,37408,37294,37714,37781,37447,37243,37819,37855,37724,38683,39450,39972,41991,44073,43763,43273,44171,43714,43790,41253,41492,42869,43022,41940,42278,41375,42658,42276,43669,43862,43969,43702,42992,43576,42509,43429,42564,42067,42140,42284,44180,44947,42845,44151,44145,43968,43929,46951,46110,46654,46339,42783,42848,41732,42511,43138,42776,41328,41659,41696,41580,39568,39898,40085,39961,41824,42121,42031,43303,42941,42580,43083,43200,43011,42583,42709,43099,44350,45289,47133,47751,48300,49917,49700,51795,51880,52124,51643,52138,51775,52259,51849,51288,50744,51568,51729,54476,57037,62432,61131,62388,61987,63114,68246,63724,66074,66823,68124,68313,68956,72078,71452,73072,71389,69500,65301,68393,67610,61937,67841,65501,63797,63990,67210,69880,69988,69470,70781,69851,69582,71280,69650,65464,65963,68488,67821,68896,69360,71620,69146,70631,70006,67117,63925,65662,63420,63793,61277,63470,63818,64941,64941,66819,66414,64290,64498,63770,63462,63119,63866,60672,58365,59061,62882,63892,64012,63165,62312,61193,63074,60800,60826,61484,62940,61577,66206,65235,67024,66915,66274,71447,70148,69167,67970,68550,69291,68508,69436,68398,67652,68352,67540,67767,67766,68810,70538,71108,70799,69356,69310,69648,69540,67314,68264,66773,66044,66228,66677,66504,65175,64974,64870,64144,64262,63210,60293,61806,60865,61706,60428,60987,62772,62900,62135,60209,57050,56629,58230,55858,56715,58050,57726,57340,57889,59204,60798,64724,65044,64088,63988,66660,67140,68165,67532,65936,65376,65800,67908,67896,68250,66785,66188,64628,65354,61498,60698,58161,54019,56022,55134,61686,60838,60924,58713,59347,60587,58683,57541,58875,59492,58427,59438,59014,61156,60376,64037,64157,64220,62834,59415,59035,59359,59124,58974,57302,59132,57488,57971,56180,53963,54161,54870,57042,57636,57338,58132,60498,59993,59132,58214,60314,61760,62948,63201,63349,63579,63340,64263,63152,65174,65770,65858,65602,63328,60806,60649,60753,62086,62058,62820,62224,62160,60636,60326,62540,63206,62870,66084,67074,67620,67422,68428,68378,69032,67378,67426,66669,68198,66698,67093,68022,69962,72736,72345,70292,69496,69375,68776,67850,69372,75572,75858,76510,76677,80370,88648,87952,90375,87326,91032,90587,89856,90464,92311,94287,98317,98892,97672,97900,93010,91965,95863,95644,97460,96408,97185,95841,95850,98587,96946,99741,99832,101110,97276,96593,101125,100004,101424,101420,104464,106059,106134,100204,97462,97805,97292,95186,94881,98664,99430,95792,94299,95300,93738,92792,93576,94592,96985,98174,98220,98364,102236,96955,95061,92552,94726,94600,94545,94536,96561,100497,99987,104077,104556,101332,102260,106144,103707,103910,104870,104747,102620,102083,101336,103733,104723,102430,100636,97701,101329,97763,96612,96554,96507,96445,96463,97431,95778,97870,96608,97500,97570,96118,95780,95672,96644,98305,96182,96551,96258,91553,88680,84250,84709,84350,86065,94270,86221,87282,90606,89932,86802,86222,80734,78596,82933,83680,81116,83983,84338,82575,84010,82715,86846,84223,84089,83841,86082,87498,87393,86909,87232,84424,82649,82390,82550,85158,82516,83213,83890,83538,78430,79163,76322,82615,79607,83424,85277,83760,84592,83644,84030,84948,84475,85077,85179,87516,93443,93691,93980,94639,94628,93749,95011,94257,94172,96490,96887,95856,94278,94734,96834,97030,103262,102972,104810,104118,102791,104104,103508,103764,103464,103127,106454,105574,106850,109644,111696,107318,107762,109004,109435,108938,107782,105590,103985,104592,105643,105858,105377,104697,101509,104288,105552,105734,110263,110274,108645,105672,106067,105415,105594,106795,104551,104887,104659,103298,102120,100964,105334,106083,107341,106947,107048,107297,108357,107146,105681,108850,109585,107984,108198,109204,108263,108923,111234,116010,117528,117420,119087,119841,117758,118630,119178,117925,117840,117265,117380,119954,118756,118341,117614,117920,119416,118062,117951,117840,115764,113298,112546,114209,115055,114130,114992,117472,116675,116462,119294,118686,120134,123306,118295,117342,117381,117405,116227,112873,114271,112500,116936,115438,113494,110112,111763,111262,112567,108377,108816,108246,109237,111240,111706,110731,110660,110188,111137,112065,111546,113960,115483,116029,115918,115268,115350,116789,116448,117074,115632,115686,115232,112651,111999,113307,108994,109643,109636,112164,114312,114049,118595,120529,122232,122391,123482,124659,121333,123306,121662,112774,110644,114959,115166,113028,110763,108194,106432,107185,108643,110532,108298,107567,110078,111005,111646,114559,114108,112898,110021,108323,109608,110098,110541,106583,101497,103885,101346,103339,102313,104723,106011,103059,101654,99692,94594,95596,94261,92215,92961,91555,86637,85129,84740,86830,88300,87370,90484,91334,90891,90802,90360,86286,91278,93430,92078,89330,89237,90395,90634,92679,92015,92513,90268,90240,88172,86432,87863,86243,85516,88137,88361,88659,88621,87486,87669,87225,87370,87877,87953,87237,88485,87648,88839,89995,90628,91530,93860,93748,91364,91100,90641,90505,91014,91296,95414,96952,95605,95551,95148,93673,92631,88428,89455,89560,89600,89225,86670,88347,89250,89300,84650,84260,78741,76968,78739,75770,73166,62910,70580,69289,70330,70138,68841,67083,66272,68854,69823,68833,68892,67504,66461,67004,68020,67976,67643,64656,64058,67988,67485,65872,66973,65776,68830,68338,72667,70891,68114,67263,65971,68432,69949,70192,70541,70930,71212,72815,74885,73909,71247,69930,70511,68918,67859,70906,70557,71337,68820,66407,66377,66011,66797,68284,68114,66902,66964,67300,69034,68854,71924,71070,71788,72963,73043,70741,74418,74132,74810,75154,77072,75692,73802,75841,76336,78178,78257,77437,77625,78658,77371,76343,75780,76347,78231,78687,78569,79861,80906,81447,80006,80193,80678,82210,81746,80504,79314,81090,79113,78148,77458,77002,76834,77552,77616,75540,76752,77065,77322,75930,74449,73618,73461,73884,73674,71409,66761,64143,63886,61056,60885,63332,63086,61730,61511,63626,63580,64458,65746,66329,65675,64509,62958,63544,64298,63312,64020,62735,61078,59794,60097,60029,59577,60260,58625,60024,61560,62583,63144,63650,64042,63364,62290,63230,64162,63819,63780,62335,65044,64756,63830,63932,64834,64723,65256,66556,66114,65099,64140,64375,65400,63756,63915,63984,64780,62888,62824,63570,63520,64107,64665,64324,64923,64963,64902,63970,63600,63480,63491,63044,63086,62900,64532,64725,69335,73025,78338,77075,77734,78993,78539,79024,80250,77846,78230,77682,78581,77439,77340,81270,79661,79832,80342,79112,78456,78306,76569,77226,77279,76842,78189,75644,76206,76417,80884,81250,81223,86620,86209,84398,84410,84100,84433,84472,83500,83664,83624,84880,84518,84754,86530,85767,85550,83322,81754,82636,82988,83773,81850,83169,81682,82246,81616,81491,82116,81938,83028,84093,81416,81189,80888,80154,80151,80910,81344,77992,77369,77582,78354,76816,77454,80504,76088,75844,75868,74851,75368,73796,74015,71460,68314,64150,65351,64883,64365],"runs":[[19.08,86.04],[100.08,110.04],[274.08,324.04],[364.08,397.04],[688.08,693.04],[1198.08,1222.04],[1273.08,1306.04],[1391.08,1447.04],[1544.08,1569.38]]}</script>
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg", tip=document.getElementById("tip");
+  function el(n,a,txt){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e}
+  function pct(v){return (v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(1)+"%"}
+  function showTip(ev,html){
+    tip.innerHTML=html;tip.hidden=false;
+    var tw=tip.offsetWidth, th=tip.offsetHeight, tx=ev.clientX+14, ty=ev.clientY-th-12;
+    if(tx+tw>window.innerWidth-8) tx=ev.clientX-tw-14;
+    if(tx<8) tx=8;
+    if(ty<8) ty=ev.clientY+16;
+    tip.style.left=tx+"px";tip.style.top=ty+"px";
+  }
+  function hover(svg,hit,cross,w,pick){
+    function move(ev){
+      var r=svg.getBoundingClientRect(), p=pick((ev.clientX-r.left)/r.width*w);
+      cross.setAttribute("x1",p.x);cross.setAttribute("x2",p.x);cross.setAttribute("visibility","visible");
+      showTip(ev,p.html);
+    }
+    function out(){tip.hidden=true;cross.setAttribute("visibility","hidden")}
+    hit.addEventListener("pointermove",move);hit.addEventListener("pointerdown",move);
+    hit.addEventListener("pointerleave",out);hit.addEventListener("pointercancel",out);
+  }
+
+  /* the nine stretches */
+  var W=[
+    ["2022 年 8–10 月","67 天",-4.3,-13.0,-8.8,-14.5,17.2,-3.5],
+    ["2022 年 11 月","10 天，FTX 倒閉",-8.1,-13.1,-6.3,-15.2,6.1,-0.7],
+    ["2023 年 5–6 月","50 天",2.8,-11.0,-8.4,-21.0,-0.3,-10.5],
+    ["2023 年 8 月","33 天",-12.5,-13.5,-15.9,-17.3,6.1,-7.7],
+    ["2024 年 6 月","5 天",-3.1,-3.4,-0.6,-0.9,4.0,-1.8],
+    ["2025 年 11 月","24 天",-13.4,-22.9,14.9,0,46.1,0],
+    ["2026 年 1–2 月","33 天",-24.4,-29.4,28.4,-1.4,29.1,-1.8],
+    ["2026 年 5–7 月","56 天",-15.4,-22.9,15.3,-2.9,16.5,-3.2],
+    ["2026 年 10–11 月","25 天，這一波",-21.5,-23.6,-26.2,-28.2,29.6,-0.4]
+  ];
+  function low(v){return v===0?'<span class="lg">途中</span>沒有回落':'<span class="lg">途中</span>最深 '+pct(v)}
+  document.getElementById("waves").innerHTML=W.map(function(r,i){
+    return '<tr'+(i===W.length-1?' class="now"':'')+'><td><b>'+r[0]+'</b><i>'+r[1]+'</i></td>'+
+      [[r[2],r[3]],[r[4],r[5]],[r[6],r[7]]].map(function(c){return '<td><b>'+pct(c[0])+'</b><i>'+low(c[1])+'</i></td>'}).join("")+'</tr>';
+  }).join("");
+
+  /* price since 2022-08 with the filter-on stretches (log scale: 16k and 120k on one chart) */
+  var PR=JSON.parse(document.getElementById("price").textContent), T0=Date.parse(PR.t0+"T00:00:00Z"), DAY=864e5;
+  function drawPrice(){
+    var host=document.getElementById("c-price"), w=Math.max(280,host.clientWidth), h=300, rows=w<520?3:2, m={l:40,r:14,t:12+13*rows,b:26}, n=PR.close.length;
+    var lo=Math.log(14000), hi=Math.log(135000);
+    var X=function(d){return m.l+(w-m.l-m.r)*d/(n-1)}, Y=function(v){return m.t+(h-m.t-m.b)*(hi-Math.log(v))/(hi-lo)};
+    host.innerHTML="";
+    var svg=el("svg",{viewBox:"0 0 "+w+" "+h,height:h});
+    PR.runs.forEach(function(r){svg.appendChild(el("rect",{x:X(r[0]),y:m.t,width:Math.max(2,X(r[1])-X(r[0])),height:h-m.t-m.b,fill:"var(--wash)"}))});
+    [20000,40000,80000,120000].forEach(function(v){
+      svg.appendChild(el("line",{x1:m.l,x2:w-m.r,y1:Y(v),y2:Y(v),stroke:"var(--grid)","stroke-width":1}));
+      svg.appendChild(el("text",{x:m.l-6,y:Y(v)+4,"text-anchor":"end","class":"tick"},(v/1000)+"k"));
+    });
+    [2023,2024,2025,2026].forEach(function(y){
+      var d=(Date.UTC(y,0,1)-T0)/DAY;
+      svg.appendChild(el("line",{x1:X(d),x2:X(d),y1:h-m.b,y2:h-m.b+4,stroke:"var(--axis)","stroke-width":1}));
+      svg.appendChild(el("text",{x:X(d),y:h-8,"text-anchor":"middle","class":"tick"},y));
+    });
+    svg.appendChild(el("path",{d:PR.close.map(function(v,i){return (i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)}).join(""),fill:"none",stroke:"var(--muted)","stroke-width":1.5,"stroke-linejoin":"round"}));
+    var DROP=[-13,-13,-11,-14,-3,-23,-29,-23,-24];
+    PR.runs.forEach(function(r,k){
+      var a=Math.max(0,Math.floor(r[0])), b=Math.min(n-1,Math.ceil(r[1])), d="";
+      for(var i=a;i<=b;i++) d+=(i>a?"L":"M")+X(i).toFixed(1)+" "+Y(PR.close[i]).toFixed(1);
+      svg.appendChild(el("path",{d:d,fill:"none",stroke:"var(--danger)","stroke-width":2.2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+      var cx=Math.max(m.l+16,Math.min(w-m.r-16,X((r[0]+r[1])/2)));
+      svg.appendChild(el("text",{x:cx,y:12+13*(k%rows),"text-anchor":"middle","class":"band"},"−"+Math.abs(DROP[k])+"%"));
+    });
+    var cross=el("line",{y1:m.t,y2:h-m.b,stroke:"var(--axis)","stroke-width":1,visibility:"hidden"});svg.appendChild(cross);
+    var hit=el("rect",{x:m.l,y:m.t,width:w-m.l-m.r,height:h-m.t-m.b,fill:"transparent"});svg.appendChild(hit);
+    hover(svg,hit,cross,w,function(x){
+      var i=Math.max(0,Math.min(n-1,Math.round((x-m.l)/(w-m.l-m.r)*(n-1)))), d=new Date(T0+i*DAY);
+      var on=PR.runs.some(function(r){return i>=Math.floor(r[0])&&i<=r[1]});
+      return {x:X(i),html:'<div class="h">'+d.getUTCFullYear()+"/"+(d.getUTCMonth()+1)+"/"+d.getUTCDate()+'</div><div class="r"><span>比特幣</span><b>'+PR.close[i].toLocaleString("en-US")+'</b></div><div class="r"><span>濾網</span><b>'+(on?"成立":"沒有成立")+'</b></div>'};
+    });
+    host.appendChild(svg);
+  }
+
+  /* this wave: index 100 at the peak hour (2026-10-02 12:00 UTC), then daily closes, last point 11-17 09:00 UTC */
+  var B=[97.4,97.6,99.7,98.8,98.5,96.0,94.2,95.2,95.6,96.5,94.3,95.8,94.1,94.7,94.0,93.9,94.6,94.4,95.6,96.9,93.8,93.5,93.2,92.3,92.3,93.2,93.7,89.8,89.1,89.4,90.3,88.5,89.2,92.7,87.6,87.4,87.4,86.2,86.8,85.0,85.3,82.3,78.7,73.9,75.3,74.7,74.1];
+  var L=[95.7,96.1,99.4,98.2,98.0,93.8,90.4,92.3,93.0,94.6,90.6,94.1,90.7,92.4,91.3,90.9,92.9,92.6,95.7,97.9,93.5,93.0,92.4,91.1,91.5,93.1,94.0,86.4,84.5,85.0,87.0,83.5,85.1,90.5,86.0,85.2,85.3,82.3,82.8,80.7,81.0,77.8,74.3,69.7,71.0,70.5,69.9];
+  var F=[95.7,96.1,99.4,98.2,98.0,93.8,90.4,92.3,93.0,94.6,90.6,94.1,90.7,92.4,91.3,90.9,92.9,92.6,95.7,97.9,93.5,95.3,95.6,96.5,96.5,95.6,95.1,99.3,100.0,99.8,98.8,100.9,100.1,96.0,103.5,103.9,103.9,105.7,104.8,107.5,107.2,111.6,117.0,124.5,122.7,122.7,122.7];
+  var P=[{x:0,t:"10/2 高點",b:100,l:100,f:100}];
+  B.forEach(function(v,i){
+    var d=new Date(Date.UTC(2026,9,2+i)), last=i===B.length-1;
+    P.push({x:last?i+0.4:i+0.5,t:(d.getUTCMonth()+1)+"/"+d.getUTCDate()+(last?" 09:00":" 收盤"),b:v,l:L[i],f:F[i]});
+  });
+  var S=[["b","比特幣","var(--muted)",1.5],["l","原本的 Ultron","var(--live)",2],["f","加上資金濾網","var(--rule)",2]];
+  function drawWave(){
+    var host=document.getElementById("c-wave"), XMAX=46, ON=20.6, Y0=60, Y1=130;
+    var w=Math.max(280,host.clientWidth), h=300, m={l:34,r:72,t:22,b:26};
+    var X=function(x){return m.l+(w-m.l-m.r)*x/XMAX}, Y=function(v){return m.t+(h-m.t-m.b)*(Y1-v)/(Y1-Y0)};
+    host.innerHTML="";
+    var svg=el("svg",{viewBox:"0 0 "+w+" "+h,height:h});
+    svg.appendChild(el("rect",{x:X(ON),y:m.t,width:X(XMAX)-X(ON),height:h-m.t-m.b,fill:"var(--wash)"}));
+    svg.appendChild(el("text",{x:X(ON)+6,y:m.t-7,"class":"band"},"10/23 起濾網成立"));
+    for(var v=70;v<=130;v+=10){
+      svg.appendChild(el("line",{x1:m.l,x2:w-m.r,y1:Y(v),y2:Y(v),stroke:v===100?"var(--axis)":"var(--grid)","stroke-width":1,"stroke-dasharray":v===100?"4 3":"none"}));
+      svg.appendChild(el("text",{x:m.l-6,y:Y(v)+4,"text-anchor":"end","class":"tick"},v));
+    }
+    [[0,"10/2"],[14,"10/16"],[28,"10/30"],[42,"11/13"]].forEach(function(t){
+      svg.appendChild(el("text",{x:X(t[0]),y:h-8,"text-anchor":t[0]===0?"start":"middle","class":"tick"},t[1]));
+    });
+    var ends=[];
+    S.forEach(function(s){
+      svg.appendChild(el("path",{d:P.map(function(p,i){return (i?"L":"M")+X(p.x).toFixed(1)+" "+Y(p[s[0]]).toFixed(1)}).join(""),fill:"none",stroke:s[2],"stroke-width":s[3],"stroke-linejoin":"round","stroke-linecap":"round"}));
+      var p=P[P.length-1];
+      svg.appendChild(el("circle",{cx:X(p.x),cy:Y(p[s[0]]),r:4,fill:s[2],stroke:"var(--surface)","stroke-width":2}));
+      ends.push({y:Y(p[s[0]]),txt:s[0]==="b"?"比特幣 ":"",v:Math.round(p[s[0]])});
+    });
+    ends.sort(function(a,b){return a.y-b.y});
+    for(var i=1;i<ends.length;i++) if(ends[i].y-ends[i-1].y<16) ends[i].y=ends[i-1].y+16;
+    ends.forEach(function(e){svg.appendChild(el("text",{x:X(XMAX)+9,y:e.y+4,"class":"endv"},e.txt+e.v))});
+    var cross=el("line",{y1:m.t,y2:h-m.b,stroke:"var(--axis)","stroke-width":1,visibility:"hidden"});svg.appendChild(cross);
+    var hit=el("rect",{x:m.l,y:m.t,width:w-m.l-m.r,height:h-m.t-m.b,fill:"transparent"});svg.appendChild(hit);
+    hover(svg,hit,cross,w,function(x){
+      var best=0, bd=1e9;
+      P.forEach(function(p,i){var dd=Math.abs(X(p.x)-x);if(dd<bd){bd=dd;best=i}});
+      var p=P[best];
+      return {x:X(p.x),html:'<div class="h">'+p.t+'</div>'+S.map(function(s){
+        return '<div class="r"><span><i class="dot" style="background:'+s[2]+'"></i>'+s[1]+'</span><b>'+p[s[0]].toFixed(1)+'</b></div>'}).join("")};
+    });
+    host.appendChild(svg);
+  }
+  function draw(){drawPrice();drawWave()}
+  draw();
+  var t;window.addEventListener("resize",function(){clearTimeout(t);t=setTimeout(draw,120)});
+})();
+</script>
 </body>
 </html>
